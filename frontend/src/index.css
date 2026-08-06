@@ -1,0 +1,167 @@
+@import "tailwindcss";
+
+@theme {
+  /* Dark golden luxury palette — exposed to Tailwind utilities */
+  --color-ink: #0c0b09; /* deep black-charcoal, the void */
+  --color-ink-soft: #14120e; /* raised surface */
+  --color-ink-card: #1a1813; /* card surface */
+  --color-line: #2e2a20; /* hairlines */
+  --color-line-soft: #241f17; /* softer hairline */
+  --color-gold: #e8c877; /* primary text — warm gold */
+  --color-gold-dim: #b39b5c; /* secondary text */
+  --color-gold-faint: #7a6a42; /* tertiary / captions */
+  --color-amber: #d4a845; /* accent */
+  --color-amber-bright: #eec76f; /* bright accent / hover */
+  --color-paper: #17150f; /* dark "paper" panel */
+  --color-sage: #7c8a6f; /* muted sage */
+  --color-sage-deep: #3a4434;
+
+  --font-serif: 'Fraunces Variable', 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Manrope Variable', 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* ============================================================
+   TerraVault — Design Tokens & Global Styles
+   Dark golden archive: black void, warm gold text, amber accents.
+   ============================================================ */
+
+:root {
+  /* Palette — dark golden luxury */
+  --ink: #0c0b09; /* deep black-charcoal (primary bg) */
+  --ink-soft: #14120e; /* raised surface */
+  --ink-card: #1a1813; /* card surface */
+  --line: #2e2a20; /* hairlines on dark */
+  --line-soft: #241f17; /* softer hairline */
+  --gold: #e8c877; /* primary text — warm gold */
+  --gold-dim: #b39b5c; /* secondary text */
+  --gold-faint: #7a6a42; /* tertiary / captions */
+  --amber: #d4a845; /* warm accent */
+  --amber-bright: #eec76f;
+  --paper: #17150f; /* dark "paper" panel */
+  --sage: #7c8a6f; /* muted sage */
+  --sage-deep: #3a4434;
+
+  /* Type */
+  --font-serif: 'Fraunces Variable', 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Manrope Variable', 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Radii — intentional, mostly sharp */
+  --r-sm: 2px;
+  --r-md: 4px;
+  --r-lg: 8px;
+
+  /* Layout */
+  --gutter: clamp(1.25rem, 5vw, 4rem);
+  --maxw: 76rem;
+  --maxw-wide: 88rem;
+  --section-pad: clamp(5rem, 12vh, 9rem);
+
+  /* Easing */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--ink);
+}
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--gold);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  font-weight: 350;
+  letter-spacing: 0.01em;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--amber);
+  color: var(--ink);
+}
+
+a {
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Focus */
+a:focus-visible,
+button:focus-visible {
+  outline: 1px solid var(--amber);
+  outline-offset: 3px;
+  border-radius: var(--r-sm);
+}
+
+/* Utilities */
+.container {
+  width: min(var(--maxw), 100% - (var(--gutter) * 2));
+  margin-inline: auto;
+}
+.container--wide {
+  width: min(var(--maxw-wide), 100% - (var(--gutter) * 2));
+  margin-inline: auto;
+}
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+.serif {
+  font-family: var(--font-serif);
+  font-weight: 380;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+.section-hair {
+  border-top: 1px solid var(--line-soft);
+}
+
+/* Line-mask text reveal (driven by useMotion) */
+.text-line {
+  overflow: hidden;
+}
+.text-line-inner {
+  will-change: transform;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  [data-reveal],
+  [data-text-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
