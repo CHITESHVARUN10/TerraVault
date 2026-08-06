@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
-import gsap from 'gsap'
 
 /**
- * Premium loading curtain: a warm archival veil with a counting
- * coordinate readout that resolves into the page.
+ * Premium loading curtain — matches 01_landing.html: TERRAVAULT
+ * wordmark, amber progress bar, counter that resolves to 072, then
+ * fades out. Uses a fixed timer chain (not rAF) so it always
+ * completes, with a hard fallback that forces unmount.
  */
 export default function Loader() {
   const [gone, setGone] = useState(false)
@@ -15,44 +16,64 @@ export default function Loader() {
       return
     }
 
-    const counter = { v: 0 }
-    const numEl = root.current?.querySelector('[data-loader-num]')
+    const bar = root.current?.querySelector<HTMLElement>('[data-loader-bar]')
+    const num = root.current?.querySelector<HTMLElement>('[data-loader-num]')
+    const veil = root.current
 
-    const tl = gsap.timeline({
-      onComplete: () => setGone(true),
-    })
-    tl.to(counter, {
-      v: 100,
-      duration: 1.4,
-      ease: 'power2.inOut',
-      onUpdate: () => {
-        if (numEl) numEl.textContent = String(Math.round(counter.v)).padStart(3, '0')
-      },
-    })
-      .to('[data-loader-bar]', { scaleX: 1, duration: 1.2, ease: 'power3.inOut' }, 0.1)
-      .to('[data-loader-veil]', {
-        clipPath: 'inset(0 0 100% 0)',
-        duration: 0.9,
-        ease: 'power4.inOut',
-      })
+    // Hard fallback — never let the loader trap the page.
+    const hardStop = window.setTimeout(() => setGone(true), 5000)
+
+    // Bar animation
+    let raf = 0
+    if (bar) {
+      const start = performance.now()
+      const DURATION = 1400
+      const tick = (now: number) => {
+        const t = Math.min(1, (now - start) / DURATION)
+        bar.style.transform = `scaleX(${t})`
+        if (t < 1) raf = requestAnimationFrame(tick)
+      }
+      raf = requestAnimationFrame(tick)
+    }
+
+    // Counter 0 → 072
+    let count = 0
+    const target = 72
+    const interval = window.setInterval(() => {
+      count++
+      if (num) num.textContent = String(count).padStart(3, '0')
+      if (count >= target) {
+        window.clearInterval(interval)
+        // Fade out
+        window.setTimeout(() => {
+          if (veil) veil.classList.add('loader-exit')
+          window.setTimeout(() => setGone(true), 1000)
+        }, 400)
+      }
+    }, 1800 / target)
 
     return () => {
-      tl.kill()
+      window.clearTimeout(hardStop)
+      window.clearInterval(interval)
+      cancelAnimationFrame(raf)
     }
   }, [])
 
   if (gone) return null
 
   return (
-    <div ref={root} className="fixed inset-0 z-[1000] flex items-center justify-center bg-ink" data-loader-veil aria-hidden="true">
-      <div className="flex flex-col items-center gap-5">
-        <span className="font-serif text-[1.4rem] tracking-[0.04em] text-gold">TerraVault</span>
-        <div className="w-[180px] h-px bg-line overflow-hidden">
-          <span data-loader-bar className="block h-full w-full bg-amber origin-left scale-x-0" />
-        </div>
-        <span className="text-[0.7rem] tracking-[0.3em] text-gold-faint" data-loader-num>
-          000
-        </span>
+    <div
+      ref={root}
+      className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-[#0c0b09]"
+      data-loader-veil
+      aria-hidden="true"
+    >
+      <span className="font-serif text-[48px] leading-none tracking-wide text-on-surface mb-8">TERRAVAULT</span>
+      <div className="w-64 h-px bg-line-soft relative overflow-hidden">
+        <span data-loader-bar className="absolute top-0 left-0 h-full w-full bg-amber origin-left scale-x-0" />
+      </div>
+      <div className="mt-4 text-[0.7rem] uppercase tracking-[0.25em] text-amber font-semibold">
+        <span data-loader-num>000</span>
       </div>
     </div>
   )

@@ -1,0 +1,127 @@
+{
+  "demoUser": {
+    "name": "Alex Vance",
+    "email": "alex.vance@terravault.io",
+    "password": "demo1234",
+    "initials": "AV",
+    "joinedAt": "2024-06-01",
+    "plan": "Pro"
+  },
+  "drive": {
+    "connected": true,
+    "email": "alex.vance@terravault.io",
+    "folderName": "TerraVault_Archive",
+    "usedBytes": 6657199309,
+    "quotaBytes": 16106127360,
+    "connectedAt": "2024-06-01T09:00:00.000Z"
+  },
+  "properties": [
+    {
+      "id": "p-village",
+      "name": "Village Property",
+      "category": "Agricultural Land",
+      "ownership": "Inherited",
+      "purchaseDate": "2021-04-02",
+      "purchasePrice": 150000,
+      "area": 1.2,
+      "areaUnit": "acres",
+      "marketValue": 450000,
+      "previousOwner": "Mohan Lal",
+      "notes": "Family land with mango trees along the eastern boundary. The old well still holds water in monsoon season.",
+      "latitude": 27.1767,
+      "longitude": 78.0081,
+      "createdAt": "2024-03-12",
+      "documents": [
+        { "id": "d-village-1", "name": "Ownership Deed", "type": "Ownership Deed", "uploadedAt": "2021-04-02", "size": "2.4 MB" },
+        { "id": "d-village-2", "name": "Survey Map v2", "type": "Survey Map", "uploadedAt": "2021-04-10", "size": "8.1 MB" },
+        { "id": "d-village-3", "name": "Tax Receipt 2023", "type": "Property Tax Receipt", "uploadedAt": "2023-01-05", "size": "850 KB" },
+        { "id": "d-village-4", "name": "Chain of Ownership", "type": "Chain of Ownership", "uploadedAt": "2022-06-18", "size": "1.1 MB" },
+        { "id": "d-village-5", "name": "Will Excerpt", "type": "Will", "uploadedAt": "2021-05-02", "size": "620 KB" }
+      ],
+      "visits": [
+        { "id": "v-village-1", "date": "2024-03-15", "note": "Spring visit. The well was dry. Needs inspection next month.", "latitude": 27.1767, "longitude": 78.0081 },
+        { "id": "v-village-2", "date": "2022-11-02", "note": "Boundary stones checked against the survey map. All aligned.", "latitude": 27.1772, "longitude": 78.0089 },
+        { "id": "v-village-3", "date": "2021-07-20", "note": "Monsoon damage assessment. Eastern fence needs repair.", "latitude": 27.176, "longitude": 78.0075 }
+      ]
+    },
+    {
+      "id": "p-neem",
+      "name": "Neem Grove",
+      "category": "Residential Plot",
+      "ownership": "Purchased",
+      "purchaseDate": "2018-06-15",
+      "purchasePrice": 120000,
+      "area": 0.5,
+      "areaUnit": "acres",
+      "marketValue": 200000,
+      "previousOwner": "R. Iyer",
+      "notes": "Cleared plot with mature neem trees. Accessible via the north service road.",
+      "latitude": 27.15,
+      "longitude": 78.0,
+      "createdAt": "2024-03-12",
+      "documents": [
+        { "id": "d-neem-1", "name": "Sale Deed", "type": "Ownership Deed", "uploadedAt": "2018-06-15", "size": "1.2 MB" },
+        { "id": "d-neem-2", "name": "Tax Receipt 2022", "type": "Property Tax Receipt", "uploadedAt": "2022-02-14", "size": "540 KB" },
+        { "id": "d-neem-3", "name": "Mutation Order", "type": "Court Order", "uploadedAt": "2018-08-03", "size": "980 KB" }
+      ],
+      "visits": [
+        { "id": "v-neem-1", "date": "2023-01-10", "note": "Fence repair on the north side. Gate hinge replaced.", "latitude": 27.15, "longitude": 78.0 }
+      ]
+    },
+    {
+      "id": "p-city42",
+      "name": "City Plot 42",
+      "category": "Commercial Property",
+      "ownership": "Purchased",
+      "purchaseDate": "2023-03-22",
+      "purchasePrice": 420000,
+      "area": 500,
+      "areaUnit": "sqft",
+      "marketValue": 550000,
+      "previousOwner": "Jindal Estates",
+      "notes": "Corner plot in the central business district. Ideal for a commercial build.",
+      "latitude": 28.6139,
+      "longitude": 77.209,
+      "createdAt": "2024-03-12",
+      "documents": [
+        { "id": "d-city-1", "name": "Purchase Deed", "type": "Ownership Deed", "uploadedAt": "2023-03-22", "size": "3.1 MB" },
+        { "id": "d-city-2", "name": "Zoning Approval", "type": "Court Order", "uploadedAt": "2023-04-10", "size": "1.8 MB" },
+        { "id": "d-city-3", "name": "Tax Receipt 2024", "type": "Property Tax Receipt", "uploadedAt": "2024-02-01", "size": "720 KB" },
+        { "id": "d-city-4", "name": "Survey Plan", "type": "Survey Map", "uploadedAt": "2023-03-25", "size": "2.2 MB" },
+        { "id": "d-city-5", "name": "Encumbrance Certificate", "type": "Inheritance Document", "uploadedAt": "2023-05-12", "size": "1.4 MB" },
+        { "id": "d-city-6", "name": "Builder Agreement", "type": "Trust Document", "uploadedAt": "2023-06-01", "size": "4.6 MB" },
+        { "id": "d-city-7", "name": "Tax Receipt 2025", "type": "Property Tax Receipt", "uploadedAt": "2025-01-15", "size": "740 KB" },
+        { "id": "d-city-8", "name": "Lease Record", "type": "Other", "uploadedAt": "2024-09-30", "size": "1.9 MB" },
+        { "id": "d-city-9", "name": "Bank NOC", "type": "Other", "uploadedAt": "2023-07-14", "size": "860 KB" },
+        { "id": "d-city-10", "name": "Original Title Deed", "type": "Ownership Deed", "uploadedAt": "2023-03-20", "size": "5.3 MB" }
+      ],
+      "visits": [
+        { "id": "v-city-1", "date": "2023-08-05", "note": "Site walkthrough with the architect. Plot dimensions confirmed.", "latitude": 28.6139, "longitude": 77.209 },
+        { "id": "v-city-2", "date": "2024-04-18", "note": "Tenant enquiry. Verified boundary markers.", "latitude": 28.6141, "longitude": 77.2092 }
+      ]
+    },
+    {
+      "id": "p-grove",
+      "name": "Orchard Grove",
+      "category": "Farm",
+      "ownership": "Gifted",
+      "purchaseDate": "2015-11-08",
+      "area": 3.2,
+      "areaUnit": "hectares",
+      "marketValue": 890000,
+      "previousOwner": "K. Sharma",
+      "notes": "Gifted by grandfather. Citrus and guava orchard under caretaker lease.",
+      "latitude": 27.4822,
+      "longitude": 77.6891,
+      "createdAt": "2024-03-12",
+      "documents": [
+        { "id": "d-grove-1", "name": "Gift Deed", "type": "Inheritance Document", "uploadedAt": "2015-11-08", "size": "1.6 MB" },
+        { "id": "d-grove-2", "name": "Crop Lease", "type": "Other", "uploadedAt": "2024-01-10", "size": "980 KB" }
+      ],
+      "visits": [
+        { "id": "v-grove-1", "date": "2024-02-22", "note": "Caretaker handover. Irrigation channel inspected.", "latitude": 27.4822, "longitude": 77.6891 },
+        { "id": "v-grove-2", "date": "2024-11-05", "note": "Harvest season visit. Orchard yield looks strong.", "latitude": 27.4825, "longitude": 77.6895 }
+      ]
+    }
+  ]
+}

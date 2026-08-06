@@ -1,9 +1,13 @@
 import { useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useStore } from '../lib/store'
-import { Field, TextInput } from '../components/ui/Field'
-import { Button } from '../components/ui/Button'
+import Plate from '../components/ui/Plate'
 
+/**
+ * Register — matches stitch_screens/03_register.html: brand wordmark,
+ * archive plate with underline inputs, "Create account" gold button,
+ * noise-texture background.
+ */
 export default function Register() {
   const { user, register } = useStore()
   const navigate = useNavigate()
@@ -22,74 +26,96 @@ export default function Register() {
   }
 
   return (
-    <main className="relative min-h-screen bg-ink flex items-center justify-center px-4 py-28">
-      <div className="absolute inset-0 opacity-40 pointer-events-none" aria-hidden="true">
-        <svg viewBox="0 0 1200 800" fill="none" className="w-full h-full opacity-60" preserveAspectRatio="xMidYMid slice">
-          {Array.from({ length: 12 }).map((_, i) => (
-            <ellipse
-              key={i}
-              cx={600 + Math.sin(i * 1.7) * 420}
-              cy={400 + Math.cos(i * 1.3) * 280}
-              rx={180 + i * 40}
-              ry={110 + i * 22}
-              stroke="#2e2a20"
-              strokeWidth="1"
-            />
-          ))}
-        </svg>
-      </div>
+    <main
+      className="min-h-screen flex items-center justify-center p-4 font-body-md antialiased"
+      style={{
+        backgroundColor: '#0c0b09',
+        backgroundImage:
+          "url(\"data:image/svg+xml,%3Csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E\")",
+        color: '#e9e1d8',
+      }}
+    >
+      <div className="w-full max-w-md">
+        {/* Brand wordmark */}
+        <div className="text-center mb-8">
+          <span className="font-serif text-[1.2rem] tracking-[0.2em] uppercase text-secondary">TerraVault</span>
+        </div>
 
-      <div className="relative w-full max-w-md">
-        <div className="relative border border-line bg-ink-soft px-8 py-10 shadow-[0_40px_120px_-30px_rgba(0,0,0,0.9)]">
-          <span className="absolute top-0 left-0 w-3.5 h-3.5 border-t border-l border-amber" aria-hidden="true" />
-          <span className="absolute top-0 right-0 w-3.5 h-3.5 border-t border-r border-amber" aria-hidden="true" />
-          <span className="absolute bottom-0 left-0 w-3.5 h-3.5 border-b border-l border-amber" aria-hidden="true" />
-          <span className="absolute bottom-0 right-0 w-3.5 h-3.5 border-b border-r border-amber" aria-hidden="true" />
+        <Plate className="p-8 sm:p-12" hover={false}>
+          <div className="text-center mb-8">
+            <span className="block text-[0.7rem] uppercase tracking-[0.3em] text-amber mb-2 font-semibold">
+              Open your vault
+            </span>
+            <h1 className="font-serif text-[2rem] text-gold">Create your vault</h1>
+          </div>
 
-          <p className="text-[0.62rem] uppercase tracking-[0.28em] text-amber mb-2">Create your vault</p>
-          <h1 className="font-serif text-3xl text-gold mb-2">Open your vault</h1>
-          <p className="text-[0.85rem] text-gold-dim mb-8">
-            One account. Every property, document and visit — kept forever.
-          </p>
-
-          <form onSubmit={submit} className="flex flex-col gap-5">
-            <Field label="Full name" required>
-              <TextInput
+          <form onSubmit={submit} className="space-y-5 flex flex-col">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[0.7rem] uppercase tracking-[0.3em] text-on-surface-variant font-semibold" htmlFor="fullName">
+                Full name
+              </label>
+              <input
+                id="fullName"
+                type="text"
+                required
                 value={name}
                 onChange={(e) => { setName(e.target.value); setError('') }}
-                placeholder="Your name"
-                autoFocus
+                placeholder="Enter your full name"
+                className="input-underline"
               />
-            </Field>
-            <Field label="Email" required>
-              <TextInput
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[0.7rem] uppercase tracking-[0.3em] text-on-surface-variant font-semibold mt-2" htmlFor="email">
+                Email
+              </label>
+              <input
+                id="email"
                 type="email"
+                required
                 value={email}
                 onChange={(e) => { setEmail(e.target.value); setError('') }}
-                placeholder="you@example.com"
+                placeholder="name@domain.com"
+                className="input-underline"
               />
-            </Field>
-            <Field label="Password" required hint="Min. 6 characters">
-              <TextInput
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[0.7rem] uppercase tracking-[0.3em] text-on-surface-variant font-semibold mt-2" htmlFor="password">
+                Password
+              </label>
+              <input
+                id="password"
                 type="password"
+                required
                 value={password}
                 onChange={(e) => { setPassword(e.target.value); setError('') }}
                 placeholder="••••••••"
+                className="input-underline"
               />
-            </Field>
+              <span className="text-[10px] uppercase tracking-wider text-outline mt-1">Min. 6 characters</span>
+            </div>
 
-            {error && <p className="text-[0.82rem] text-amber-bright">{error}</p>}
+            {error && <p className="text-error text-[0.85rem] border-l-2 border-error pl-2">{error}</p>}
 
-            <Button onClick={submit} className="w-full mt-1">Create account</Button>
+            <button
+              type="submit"
+              className="btn-lift w-full py-3.5 mt-2 bg-gold text-ink font-semibold text-[0.8rem] uppercase tracking-[0.2em] hover:bg-primary transition-colors"
+            >
+              Create account
+            </button>
           </form>
 
-          <p className="mt-7 text-center text-[0.8rem] text-gold-faint">
-            Already have a vault?{' '}
-            <Link to="/login" className="text-amber hover:text-amber-bright no-underline">
-              Sign in
-            </Link>
-          </p>
-        </div>
+          <div className="mt-8 text-center">
+            <p className="text-[0.85rem] text-on-surface-variant">
+              Already have a vault?{' '}
+              <Link
+                to="/login"
+                className="text-amber hover:text-gold transition-colors no-underline relative after:content-[''] after:absolute after:bottom-[-2px] after:left-0 after:w-0 after:h-px after:bg-amber hover:after:w-full after:transition-all after:duration-300"
+              >
+                Sign in
+              </Link>
+            </p>
+          </div>
+        </Plate>
       </div>
     </main>
   )

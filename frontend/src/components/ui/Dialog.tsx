@@ -1,5 +1,8 @@
 import { useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
+import gsap from 'gsap'
+import CornerTicks from './CornerTicks'
+import { IconClose } from '../icons'
 
 interface DialogProps {
   open: boolean
@@ -14,6 +17,7 @@ interface DialogProps {
 /**
  * Editorial modal dialog: dark gold panel, hairline border, corner ticks.
  * Closes on overlay click and Escape. Locks body scroll while open.
+ * Animates in with a fade + rise on mount, and out when closed.
  */
 export default function Dialog({
   open,
@@ -25,6 +29,23 @@ export default function Dialog({
   wide,
 }: DialogProps) {
   const panelRef = useRef<HTMLDivElement>(null)
+  const overlayRef = useRef<HTMLDivElement>(null)
+
+  // Entrance animation when the dialog opens
+  useEffect(() => {
+    if (!open) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(overlayRef.current, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.35, ease: 'power2.out' })
+      gsap.fromTo(
+        panelRef.current,
+        { autoAlpha: 0, y: 28 },
+        { autoAlpha: 1, y: 0, duration: 0.55, ease: 'power3.out' },
+      )
+    })
+    return () => ctx.revert()
+  }, [open])
 
   useEffect(() => {
     if (!open) return
@@ -50,19 +71,16 @@ export default function Dialog({
       aria-label={title}
     >
       <div
+        ref={overlayRef}
         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
         onClick={onClose}
         aria-hidden="true"
       />
       <div
         ref={panelRef}
-        className={`relative w-full ${wide ? 'max-w-2xl' : 'max-w-md'} max-h-[86vh] overflow-y-auto bg-ink-soft border border-line shadow-[0_40px_120px_-30px_rgba(0,0,0,0.9)]`}
+        className={`relative w-full ${wide ? 'max-w-2xl' : 'max-w-md'} max-h-[86vh] overflow-y-auto bg-panel border border-line shadow-[0_40px_120px_-30px_rgba(0,0,0,0.9)]`}
       >
-        {/* corner ticks */}
-        <span className="absolute top-0 left-0 w-3.5 h-3.5 border-t border-l border-amber pointer-events-none" aria-hidden="true" />
-        <span className="absolute top-0 right-0 w-3.5 h-3.5 border-t border-r border-amber pointer-events-none" aria-hidden="true" />
-        <span className="absolute bottom-0 left-0 w-3.5 h-3.5 border-b border-l border-amber pointer-events-none" aria-hidden="true" />
-        <span className="absolute bottom-0 right-0 w-3.5 h-3.5 border-b border-r border-amber pointer-events-none" aria-hidden="true" />
+        <CornerTicks />
 
         <div className="flex items-start justify-between gap-6 px-7 pt-7 pb-5 border-b border-line-soft">
           <div>
@@ -74,9 +92,9 @@ export default function Dialog({
           <button
             onClick={onClose}
             aria-label="Close dialog"
-            className="text-gold-faint hover:text-amber-bright transition-colors text-xl leading-none mt-0.5"
+            className="text-gold-faint hover:text-amber-bright transition-colors mt-0.5"
           >
-            ✕
+            <IconClose size={22} />
           </button>
         </div>
 

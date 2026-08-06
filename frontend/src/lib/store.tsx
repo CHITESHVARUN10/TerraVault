@@ -18,6 +18,7 @@ const KEYS = {
   users: 'terravault.users',
   session: 'terravault.session',
   drive: 'terravault.drive',
+  mock: 'terravault.mock',
 }
 
 /** Per-account vault key, e.g. terravault.vault.owner@example.com */
@@ -38,6 +39,28 @@ function write(key: string, value: unknown) {
 
 function uid() {
   return Math.random().toString(36).slice(2, 10)
+}
+
+/**
+ * Shape of /mock.json — the demo dataset used for test mode.
+ * Served from the frontend public folder so all protected pages
+ * can be previewed without registering or signing in.
+ */
+interface MockData {
+  demoUser: AppUser
+  drive: DriveConnection
+  properties: Property[]
+}
+
+/** Load mock.json once; used to auto-activate the demo session for testing. */
+async function loadMock(): Promise<MockData | null> {
+  try {
+    const res = await fetch('/mock.json')
+    if (!res.ok) return null
+    return (await res.json()) as MockData
+  } catch {
+    return null
+  }
 }
 
 const SAMPLE_DOCUMENTS = [
@@ -168,6 +191,33 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       quotaBytes: 15 * 1024 ** 3,
     }),
   )
+  const [mock, setMock] = useState<MockData | null>(() => read(KEYS.mock, null))
+
+  // Test mode: if no real session exists, auto-sign-in with the demo
+  // user from /mock.json so every screen is browsable without registering.
+  useEffect(() => {
+    let cancelled = false
+    const cached = read<MockData | null>(KEYS.mock, null)
+    const apply = (m: MockData | null) => {
+      if (cancelled || !m) return
+      setMock(m)
+      write(KEYS.mock, m)
+      setUsers((prev) => {
+        const exists = prev.some((u) => u.email === m.demoUser.email)
+        return exists ? prev : [m.demoUser, ...prev]
+      })
+      setSession((prev) => prev ?? m.demoUser.email)
+      setDrive((prev) => (prev.connected ? prev : m.drive))
+    }
+    if (cached) {
+      apply(cached)
+      return
+    }
+    loadMock().then(apply)
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   useEffect(() => write(KEYS.users, users), [users])
   useEffect(() => write(KEYS.session, session), [session])
@@ -191,17 +241,23 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   })
 
   const activeKey = user?.email ? vaultKey(user.email) : null
+  const isMockUser = session === mock?.demoUser.email
   useEffect(() => {
     if (!activeKey) {
       setProperties([])
       return
     }
+    // Test mode: the mock user's vault comes straight from /mock.json.
+    if (isMockUser && mock) {
+      setProperties(mock.properties)
+      return
+    }
     setProperties(read<Property[] | null>(activeKey, null) ?? seedVault())
-  }, [activeKey])
+  }, [activeKey, isMockUser, mock])
 
   useEffect(() => {
-    if (activeKey) write(activeKey, properties)
-  }, [properties, activeKey])
+    if (activeKey && !isMockUser) write(activeKey, properties)
+  }, [properties, activeKey, isMockUser])
 
   const register = useCallback(
     (name: string, email: string, password: string) => {
@@ -238,13 +294,19 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const login = useCallback(
     (email: string, password: string) => {
       const normalized = email.trim().toLowerCase()
+      // Test mode: empty credentials fall back to the demo user so the
+      // "Sign in" button works without registering.
+      if (!normalized && mock) {
+        setSession(mock.demoUser.email)
+        return { ok: true }
+      }
       const found = users.find((u) => u.email === normalized)
       if (!found) return { ok: false, error: 'No account found for this email.' }
       if (found.password !== password) return { ok: false, error: 'Incorrect password. Please try again.' }
       setSession(normalized)
       return { ok: true }
     },
-    [users],
+    [users, mock],
   )
 
   const logout = useCallback(() => setSession(null), [])

@@ -8,17 +8,17 @@ const PILLARS = [
   {
     n: '01',
     title: 'Your Drive, not ours',
-    body: 'Every document, photograph, and coordinate lives inside a folder you control in your own Google Drive.',
+    body: 'All records reside in your personal cloud storage, never on our servers.',
   },
   {
     n: '02',
     title: 'Nothing retained',
-    body: 'TerraVault orchestrates reads and writes, then forgets. Property data is never stored in our database.',
+    body: 'We act as a lens, not a bucket. Your data passes through, never stays.',
   },
   {
     n: '03',
     title: 'Zero-trust by design',
-    body: 'Even a full compromise of our backend exposes none of your property — there is nothing of yours to take.',
+    body: 'End-to-end encryption ensures only you can unlock your property\'s history.',
   },
 ]
 
@@ -49,26 +49,24 @@ export default function Privacy() {
   return (
     <section ref={root} id="privacy" className="bg-ink py-[var(--section-pad)] border-t border-line-soft">
       <div className="mx-auto w-[min(var(--maxw),100%-(var(--gutter)*2))]">
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-[clamp(2rem,6vw,6rem)] items-start mb-[clamp(3rem,8vh,6rem)]">
-          <p className="eyebrow" data-reveal>
-            04 — Privacy
+        <div className="flex flex-col items-center text-center mb-[clamp(3rem,8vh,6rem)]">
+          <p className="eyebrow mb-4" data-reveal>
+            Section — 04 Privacy
           </p>
-          <h2 className="serif text-[clamp(2.2rem,5vw,4rem)] leading-[1.05]" data-text-reveal>
-            We never hold your land.
-            <br />
-            <em className="italic text-amber-bright">We hold the key.</em>
+          <h2 className="serif font-[380] text-[clamp(2rem,3.3vw,3rem)] leading-[1.15] max-w-3xl text-on-surface" data-text-reveal>
+            We never hold your land. <em className="italic text-[#d4a845]">hold the key.</em>
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {PILLARS.map((p) => (
             <div
-              className="border border-line rounded-[4px] p-9 bg-ink-soft hover:border-amber hover:-translate-y-1 transition-all duration-500"
+              className="group p-8 border border-line-soft hover:border-amber transition-colors duration-300 flex flex-col gap-4"
               data-privacy-card
               key={p.n}
             >
-              <span className="block text-[0.7rem] uppercase tracking-[0.24em] text-amber mb-9">{p.n}</span>
-              <h3 className="serif text-[1.5rem] mb-3.5">{p.title}</h3>
+              <span className="text-[0.75rem] uppercase tracking-[0.2em] text-[#d4a845] opacity-40">{p.n}</span>
+              <h3 className="serif text-[1.5rem] text-on-surface">{p.title}</h3>
               <p className="text-gold-dim text-[0.95rem] leading-[1.65]">{p.body}</p>
             </div>
           ))}

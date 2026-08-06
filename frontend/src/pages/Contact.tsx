@@ -1,10 +1,15 @@
 import { useState } from 'react'
 import { useStore } from '../lib/store'
 import { PageFrame } from '../components/ui/PageFrame'
-import { PageHeader } from '../components/ui/PageHeader'
-import { Button } from '../components/ui/Button'
-import { Field, TextInput, TextArea } from '../components/ui/Field'
+import { UnderlineInput } from '../components/ui/Field'
+import PageEnter from '../components/PageEnter'
 
+/**
+ * Contact — matches stitch_screens/08_contact.html:
+ * Support eyebrow, "Reach out to the registry archives.",
+ * form plate with underline fields + sent state,
+ * info plates (Direct Inquiry / Registry Latency / Secure Protocol).
+ */
 export default function Contact() {
   const { user } = useStore()
   const [form, setForm] = useState({
@@ -25,80 +30,98 @@ export default function Contact() {
   }
 
   return (
-    <PageFrame>
-      <PageHeader
-        eyebrow="Support"
-        title="Contact"
-        description="Questions about your vault, documents or Drive connection? Write to us — a human replies."
-      />
+    <PageEnter>
+      <PageFrame>
+        {/* Page header */}
+        <div className="mb-16" data-page-reveal>
+          <span className="text-[0.7rem] uppercase tracking-[0.3em] text-outline block mb-4 font-semibold">Support</span>
+          <h1 className="font-serif text-[clamp(2.5rem,5vw,4rem)] leading-[1.05] text-on-surface mb-4">Contact</h1>
+          <p className="text-[1.05rem] text-on-surface-variant max-w-2xl">Reach out to the registry archives.</p>
+        </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-10">
-        <section className="border border-line bg-ink-soft h-fit">
-          <div className="px-7 py-5 border-b border-line-soft">
-            <h2 className="font-serif text-xl text-gold">Send a message</h2>
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12">
+          {/* Left: form */}
+          <div className="md:col-span-7 lg:col-span-8" data-page-reveal>
+            <div className="bg-ink-card border border-line-soft p-8 md:p-12 corner-ticks hover:border-line transition-colors relative">
+              <h2 className="font-serif text-[1.6rem] text-on-surface mb-8">Send a message</h2>
 
-          {sent ? (
-            <div className="px-7 py-10 text-center">
-              <p className="text-amber text-2xl mb-3">✓</p>
-              <p className="font-serif text-lg text-gold mb-2">Message sent</p>
-              <p className="text-[0.85rem] text-gold-dim">
-                Thank you — we'll get back to you at {form.email} shortly.
-              </p>
+              {sent ? (
+                <div className="text-center py-8">
+                  <p className="font-serif text-xl text-gold mb-2">Message sent ✓</p>
+                  <p className="text-[0.9rem] text-on-surface-variant">
+                    Thank you — we'll get back to you at {form.email} shortly.
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={submit} className="space-y-6 relative z-10">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="flex flex-col">
+                      <label className="text-[0.68rem] uppercase tracking-[0.2em] text-outline mb-2 font-semibold" htmlFor="name">Name</label>
+                      <UnderlineInput
+                        id="name"
+                        value={form.name}
+                        onChange={(e) => setForm({ ...form, name: e.target.value })}
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <label className="text-[0.68rem] uppercase tracking-[0.2em] text-outline mb-2 font-semibold" htmlFor="email">Email</label>
+                      <UnderlineInput
+                        id="email"
+                        type="email"
+                        value={form.email}
+                        onChange={(e) => setForm({ ...form, email: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col">
+                    <label className="text-[0.68rem] uppercase tracking-[0.2em] text-outline mb-2 font-semibold" htmlFor="subject">Subject</label>
+                    <UnderlineInput
+                      id="subject"
+                      value={form.subject}
+                      onChange={(e) => setForm({ ...form, subject: e.target.value })}
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label className="text-[0.68rem] uppercase tracking-[0.2em] text-outline mb-2 font-semibold" htmlFor="message">Message</label>
+                    <textarea
+                      id="message"
+                      rows={5}
+                      value={form.message}
+                      onChange={(e) => setForm({ ...form, message: e.target.value })}
+                      className="w-full bg-transparent border border-line-soft text-on-surface font-body-md p-4 focus:outline-none focus:border-amber transition-colors resize-none mt-2"
+                    />
+                  </div>
+
+                  {error && <p className="text-error text-[0.85rem] border-l-2 border-error pl-2">{error}</p>}
+
+                  <div className="pt-4">
+                    <button
+                      type="submit"
+                      className="btn-lift bg-gold text-ink font-semibold text-[0.8rem] uppercase tracking-[0.14em] px-8 py-4 hover:bg-primary transition-colors flex items-center justify-center min-w-[200px] cursor-pointer"
+                    >
+                      {sent ? 'Message sent ✓' : 'Send message'}
+                    </button>
+                  </div>
+                </form>
+              )}
             </div>
-          ) : (
-            <form onSubmit={submit} className="px-7 py-6 flex flex-col gap-5">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <Field label="Name" required>
-                  <TextInput value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-                </Field>
-                <Field label="Email" required>
-                  <TextInput type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-                </Field>
-              </div>
-              <Field label="Subject">
-                <TextInput
-                  value={form.subject}
-                  onChange={(e) => setForm({ ...form, subject: e.target.value })}
-                  placeholder="e.g. Drive connection issue"
-                />
-              </Field>
-              <Field label="Message" required>
-                <TextArea
-                  value={form.message}
-                  onChange={(e) => setForm({ ...form, message: e.target.value })}
-                  placeholder="How can we help?"
-                />
-              </Field>
-              {error && <p className="text-[0.82rem] text-amber-bright">{error}</p>}
-              <div>
-                <Button onClick={submit}>Send message</Button>
-              </div>
-            </form>
-          )}
-        </section>
+          </div>
 
-        <aside className="flex flex-col gap-6">
-          <div className="border border-line bg-ink-soft px-7 py-6">
-            <p className="text-[0.62rem] uppercase tracking-[0.22em] text-gold-faint mb-3">Email</p>
-            <p className="text-[0.92rem] text-gold">support@terravault.app</p>
+          {/* Right: info plates */}
+          <div className="md:col-span-5 lg:col-span-4 flex flex-col space-y-6" data-page-reveal>
+            {[
+              { title: 'Direct Inquiry', body: 'registry@terravault.io' },
+              { title: 'Registry Latency', body: 'Average response time: 24-48 hours.' },
+              { title: 'Secure Protocol', body: 'All communications are encrypted and purged after resolution.' },
+            ].map((plate) => (
+              <div key={plate.title} className="bg-ink-card border border-line-soft p-8 corner-ticks hover:border-line transition-colors relative">
+                <h3 className="font-serif text-xl text-gold mb-2">{plate.title}</h3>
+                <p className="text-[0.95rem] text-on-surface-variant">{plate.body}</p>
+              </div>
+            ))}
           </div>
-          <div className="border border-line bg-ink-soft px-7 py-6">
-            <p className="text-[0.62rem] uppercase tracking-[0.22em] text-gold-faint mb-3">Response time</p>
-            <p className="text-[0.92rem] text-gold-dim leading-[1.7]">
-              We reply within two working days. For urgent account issues, mention
-              “urgent” in the subject.
-            </p>
-          </div>
-          <div className="border border-line bg-ink-soft px-7 py-6">
-            <p className="text-[0.62rem] uppercase tracking-[0.22em] text-gold-faint mb-3">Privacy</p>
-            <p className="text-[0.92rem] text-gold-dim leading-[1.7]">
-              We never see your property documents, photos or GPS data — it all
-              lives in your own Google Drive.
-            </p>
-          </div>
-        </aside>
-      </div>
-    </PageFrame>
+        </div>
+      </PageFrame>
+    </PageEnter>
   )
 }

@@ -5,6 +5,7 @@
   --color-ink: #0c0b09; /* deep black-charcoal, the void */
   --color-ink-soft: #14120e; /* raised surface */
   --color-ink-card: #1a1813; /* card surface */
+  --color-panel: #14120e; /* modal/plate panel */
   --color-line: #2e2a20; /* hairlines */
   --color-line-soft: #241f17; /* softer hairline */
   --color-gold: #e8c877; /* primary text — warm gold */
@@ -16,8 +17,23 @@
   --color-sage: #7c8a6f; /* muted sage */
   --color-sage-deep: #3a4434;
 
+  /* Material-design surface/outline tokens used by the stitch screens */
+  --color-outline: #98907f;
+  --color-outline-variant: #4c4638;
+  --color-error: #ffb4ab;
+  --color-error-container: #93000a;
+  --color-delete: #8b2b1a;
+  --color-delete-hover: #a6331f;
+  --color-surface-container: #221f1a;
+  --color-surface-container-high: #2d2a24;
+  --color-surface-container-highest: #38342e;
+  --color-surface-container-lowest: #100e09;
+  --color-on-surface: #e9e1d8;
+  --color-on-surface-variant: #cfc5b3;
+
   --font-serif: 'Fraunces Variable', 'Fraunces', Georgia, 'Times New Roman', serif;
   --font-sans: 'Manrope Variable', 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
@@ -33,6 +49,7 @@
   --ink: #0c0b09; /* deep black-charcoal (primary bg) */
   --ink-soft: #14120e; /* raised surface */
   --ink-card: #1a1813; /* card surface */
+  --panel: #14120e; /* modal / plate panel */
   --line: #2e2a20; /* hairlines on dark */
   --line-soft: #241f17; /* softer hairline */
   --gold: #e8c877; /* primary text — warm gold */
@@ -44,9 +61,24 @@
   --sage: #7c8a6f; /* muted sage */
   --sage-deep: #3a4434;
 
+  /* Material-design surface/outline tokens used by the stitch screens */
+  --outline: #98907f;
+  --outline-variant: #4c4638;
+  --error: #ffb4ab;
+  --error-container: #93000a;
+  --delete: #8b2b1a;
+  --delete-hover: #a6331f;
+  --surface-container: #221f1a;
+  --surface-container-high: #2d2a24;
+  --surface-container-highest: #38342e;
+  --surface-container-lowest: #100e09;
+  --on-surface: #e9e1d8;
+  --on-surface-variant: #cfc5b3;
+
   /* Type */
   --font-serif: 'Fraunces Variable', 'Fraunces', Georgia, 'Times New Roman', serif;
   --font-sans: 'Manrope Variable', 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   /* Radii — intentional, mostly sharp */
   --r-sm: 2px;
@@ -97,16 +129,6 @@ body {
   color: var(--ink);
 }
 
-a {
-  color: inherit;
-}
-
-img {
-  max-width: 100%;
-  display: block;
-}
-
-/* Focus */
 a:focus-visible,
 button:focus-visible {
   outline: 1px solid var(--amber);
@@ -125,7 +147,7 @@ button:focus-visible {
 }
 .eyebrow {
   font-family: var(--font-sans);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.3em;
   text-transform: uppercase;
@@ -142,10 +164,10 @@ button:focus-visible {
 }
 
 /* Line-mask text reveal (driven by useMotion) */
-.text-line {
+.reveal-line {
   overflow: hidden;
 }
-.text-line-inner {
+.reveal-line-inner {
   will-change: transform;
 }
 
@@ -164,4 +186,171 @@ button:focus-visible {
     opacity: 1 !important;
     transform: none !important;
   }
+}
+
+/* ============================================================
+   Shared component styles (stitch_screens design language)
+   ============================================================ */
+
+/* ---------- Amber corner ticks ---------- */
+.corner-ticks {
+  position: relative;
+}
+.corner-ticks::before,
+.corner-ticks::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-color: var(--amber);
+  border-style: solid;
+  pointer-events: none;
+  z-index: 2;
+}
+.corner-ticks::before {
+  top: -1px;
+  left: -1px;
+  border-width: 1px 0 0 1px;
+}
+.corner-ticks::after {
+  bottom: -1px;
+  right: -1px;
+  border-width: 0 1px 1px 0;
+}
+
+/* Two-corner variants (top-right + bottom-left) */
+.corner-ticks-tr-bl::before {
+  top: -1px;
+  right: -1px;
+  left: auto;
+  bottom: auto;
+  border-width: 1px 1px 0 0;
+}
+.corner-ticks-tr-bl::after {
+  bottom: -1px;
+  left: -1px;
+  top: auto;
+  right: auto;
+  border-width: 0 0 1px 1px;
+}
+
+/* ---------- Archive plate ---------- */
+.plate {
+  background: var(--ink-card);
+  border: 1px solid var(--line-soft);
+  position: relative;
+}
+.plate-hover:hover {
+  border-color: var(--line);
+}
+.plate-panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  position: relative;
+}
+
+/* ---------- Borderless underline input (register / profile / dialogs) ---------- */
+.input-underline {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--line-soft);
+  color: var(--on-surface);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 350;
+  padding: 0.5rem 0;
+  border-radius: 0;
+  transition: border-color 0.2s ease;
+}
+.input-underline:focus {
+  outline: none;
+  border-bottom-color: var(--amber);
+  box-shadow: none;
+}
+.input-underline::placeholder {
+  color: var(--outline-variant);
+}
+.input-underline:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ---------- Bordered form input (login) ---------- */
+.form-input {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--line-soft);
+  border-radius: 2px;
+  color: var(--gold);
+  padding: 0.8rem 1rem;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 350;
+  transition: border-color 0.2s ease-linear;
+}
+.form-input:focus {
+  outline: none;
+  border-color: var(--amber);
+  box-shadow: none;
+}
+.form-input::placeholder {
+  color: var(--outline-variant);
+}
+
+/* ---------- Topographic contour SVG background ---------- */
+.topo-bg {
+  background-color: var(--ink);
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%231a1813' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+}
+
+/* ---------- Contour noise texture (landing) ---------- */
+.contour-bg {
+  background-image: url("data:image/svg+xml,%3Csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.005' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='1 0 0 0 0, 0 1 0 0 0, 0 0 1 0 0, 0 0 0 1 0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='discrete' tableValues='0 0 0 0 0 0 0 0.1 0'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' fill='%237a6a42' opacity='0.05'/%3E%3C/svg%3E");
+  background-size: cover;
+}
+
+/* ---------- Loader exit ---------- */
+.loader-exit {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---------- Button lift micro-interaction ---------- */
+.btn-lift {
+  transition: transform 0.2s linear;
+}
+.btn-lift:hover {
+  transform: translateY(-2px);
+}
+
+/* ---------- Bounce-subtle scroll hint ---------- */
+@keyframes bounce-subtle {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+.animate-bounce-subtle {
+  animation: bounce-subtle 2s infinite ease-in-out;
+}
+
+/* ---------- Soft pulse (map pin) ---------- */
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+.animate-pulse-soft {
+  animation: pulse-soft 1.8s infinite ease-in-out;
 }

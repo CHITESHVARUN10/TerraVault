@@ -6,8 +6,9 @@ import { ContourField } from './Contours'
 gsap.registerPlugin(ScrollTrigger)
 
 /**
- * Statement — the editorial manifesto beat. A large serif pull-quote
- * over an animated contour field, with the copy revealing line by line.
+ * Statement — matches 01_landing.html "OUR PURPOSE" section:
+ * centered eyebrow + serif headline + body + 3-col footer row,
+ * over an animated contour field.
  */
 export default function Statement() {
   const root = useRef<HTMLElement>(null)
@@ -29,42 +30,33 @@ export default function Statement() {
   }, [])
 
   return (
-    <section ref={root} id="statement" className="relative overflow-hidden bg-ink py-[var(--section-pad)] border-t border-line-soft">
+    <section
+      ref={root}
+      id="statement"
+      className="relative overflow-hidden bg-ink py-[var(--section-pad)] contour-bg"
+    >
       <div className="absolute inset-0 z-0 opacity-50" aria-hidden="true" data-statement-contours>
         <ContourField variant="faint" />
       </div>
 
-      <div className="relative z-[1] mx-auto grid w-[min(var(--maxw),100%-(var(--gutter)*2))] grid-cols-1 md:grid-cols-[1fr_2fr] gap-[clamp(2rem,6vw,6rem)] items-start">
-        <p className="eyebrow mt-1" data-reveal>
-          Why TerraVault exists
+      <div className="relative z-[1] mx-auto flex flex-col items-center text-center gap-8 w-[min(var(--maxw),100%-(var(--gutter)*2))]">
+        <p className="eyebrow" data-reveal>
+          Our purpose
         </p>
-
-        <h2 className="serif text-[clamp(2.2rem,5vw,4rem)] leading-[1.05] mb-7" data-text-reveal>
-          Land outlives memory.
-          <br />
-          <span className="text-gold-dim font-[340]">The records shouldn't.</span>
+        <h2 className="serif font-[380] text-[clamp(2rem,3.3vw,3rem)] leading-[1.15] max-w-4xl text-on-surface" data-text-reveal>
+          Land <em className="italic text-[#d4a845]">outlives</em> memory. The records <em className="italic text-[#d4a845]">shouldn't</em>.
         </h2>
-
-        <p className="md:col-start-2 max-w-[34rem] text-[1.1rem] leading-[1.75] text-gold-dim" data-reveal data-reveal-delay="120">
-          A boundary you walked once, a deed signed decades ago, a photograph of
-          the house before the trees grew — the details of your property fade
-          quietly. TerraVault keeps them close: every document, every coordinate,
-          every visit, held in one private place that belongs to you.
+        <p className="text-[1.1rem] leading-[1.7] text-gold-dim max-w-2xl" data-reveal data-reveal-delay="120">
+          We provide a permanent physical sanctuary for the documents that define your legacy,
+          ensuring that ground truth remains accessible for centuries.
         </p>
-      </div>
-
-      <div className="relative z-[1] mx-auto mt-16 grid w-[min(var(--maxw),100%-(var(--gutter)*2))] grid-cols-1 md:grid-cols-3 gap-8 border-t border-line-soft pt-9" data-reveal>
-        <div className="flex flex-col gap-1.5">
-          <span className="text-[0.68rem] uppercase tracking-[0.24em] text-gold-faint">Documents</span>
-          <span className="font-serif text-xl text-gold">Deeds · surveys · receipts</span>
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <span className="text-[0.68rem] uppercase tracking-[0.24em] text-gold-faint">Ground truth</span>
-          <span className="font-serif text-xl text-gold">GPS · photographs · notes</span>
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <span className="text-[0.68rem] uppercase tracking-[0.24em] text-gold-faint">History</span>
-          <span className="font-serif text-xl text-gold">Every visit, dated forever</span>
+        <div
+          className="flex gap-16 mt-4 text-[0.7rem] uppercase tracking-widest text-amber opacity-60"
+          data-reveal
+        >
+          <span>Documents</span>
+          <span>Ground truth</span>
+          <span>History</span>
         </div>
       </div>
     </section>

@@ -27,12 +27,12 @@ export default function Landing() {
         <Hero />
         <Statement />
         <Vault />
-        <Privacy />
         <Visits />
         <Maps />
+        <Privacy />
         <CTA />
       </main>
-      <Footer />
+      <Footer variant="landing" />
     </div>
   )
 }

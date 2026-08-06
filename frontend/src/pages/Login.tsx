@@ -1,9 +1,14 @@
 import { useState } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useStore } from '../lib/store'
-import { Field, TextInput } from '../components/ui/Field'
-import { Button } from '../components/ui/Button'
+import Plate from '../components/ui/Plate'
+import { IconMail, IconKey, IconArrowForward } from '../components/icons'
 
+/**
+ * Login — matches stitch_screens/02_login.html: archive plate card,
+ * bordered inputs with right icons, amber "Forgot your security key?"
+ * link, gold full-width submit, error line, footer CTA.
+ */
 export default function Login() {
   const { user, login } = useStore()
   const navigate = useNavigate()
@@ -11,6 +16,7 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
 
   const from = (location.state as { from?: string } | null)?.from ?? '/dashboard'
 
@@ -18,73 +24,117 @@ export default function Login() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
-    const result = login(email, password)
-    if (!result.ok) return setError(result.error ?? 'Something went wrong.')
+    setSubmitting(true)
+    // Test mode: an empty form signs straight into the demo account.
+    const result = login(email.trim(), password)
+    if (!result.ok) {
+      setSubmitting(false)
+      return setError(result.error ?? 'Invalid credentials or unaligned coordinates.')
+    }
     navigate(from, { replace: true })
   }
 
   return (
-    <main className="relative min-h-screen bg-ink flex items-center justify-center px-4 py-28">
-      <div className="absolute inset-0 opacity-40 pointer-events-none" aria-hidden="true">
-        <svg viewBox="0 0 1200 800" fill="none" className="w-full h-full opacity-60" preserveAspectRatio="xMidYMid slice">
-          {Array.from({ length: 12 }).map((_, i) => (
-            <ellipse
-              key={i}
-              cx={600 + Math.sin(i * 1.7) * 420}
-              cy={400 + Math.cos(i * 1.3) * 280}
-              rx={180 + i * 40}
-              ry={110 + i * 22}
-              stroke="#2e2a20"
-              strokeWidth="1"
-            />
-          ))}
-        </svg>
-      </div>
+    <main
+      className="min-h-screen flex items-center justify-center p-4"
+      style={{
+        background: `
+          radial-gradient(circle at 50% 50%, rgba(212, 168, 69, 0.03) 0%, transparent 60%),
+          repeating-radial-gradient(circle at center, transparent 0, transparent 40px, rgba(212, 168, 69, 0.05) 41px, transparent 42px)
+        `,
+        backgroundColor: '#0c0b09',
+      }}
+    >
+      <div className="relative w-full max-w-md z-10">
+        <Plate className="p-8 sm:p-12" hover={false}>
+          {/* Header */}
+          <div className="text-center mb-10">
+            <p className="text-[0.7rem] uppercase tracking-[0.3em] text-amber mb-4 font-semibold">
+              Vault access
+            </p>
+            <h1 className="font-serif text-[2rem] text-on-surface">Sign in</h1>
+          </div>
 
-      <div className="relative w-full max-w-md">
-        <div className="relative border border-line bg-ink-soft px-8 py-10 shadow-[0_40px_120px_-30px_rgba(0,0,0,0.9)]">
-          <span className="absolute top-0 left-0 w-3.5 h-3.5 border-t border-l border-amber" aria-hidden="true" />
-          <span className="absolute top-0 right-0 w-3.5 h-3.5 border-t border-r border-amber" aria-hidden="true" />
-          <span className="absolute bottom-0 left-0 w-3.5 h-3.5 border-b border-l border-amber" aria-hidden="true" />
-          <span className="absolute bottom-0 right-0 w-3.5 h-3.5 border-b border-r border-amber" aria-hidden="true" />
+          {/* Form */}
+          <form onSubmit={submit} className="space-y-6">
+            <div>
+              <label className="block text-[0.7rem] uppercase tracking-[0.3em] text-on-surface-variant mb-2 font-semibold" htmlFor="email">
+                Email Address
+              </label>
+              <div className="relative">
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value); setError('') }}
+                  placeholder="user@terravault.com"
+                  className="form-input pr-10"
+                />
+                <span className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-outline-variant">
+                  <IconMail size={16} />
+                </span>
+              </div>
+            </div>
 
-          <p className="text-[0.62rem] uppercase tracking-[0.28em] text-amber mb-2">Vault access</p>
-          <h1 className="font-serif text-3xl text-gold mb-2">Sign in</h1>
-          <p className="text-[0.85rem] text-gold-dim mb-8">
-            Return to your property records.
-          </p>
+            <div>
+              <label className="block text-[0.7rem] uppercase tracking-[0.3em] text-on-surface-variant mb-2 font-semibold" htmlFor="password">
+                Security Key
+              </label>
+              <div className="relative">
+                <input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => { setPassword(e.target.value); setError('') }}
+                  placeholder="••••••••••••"
+                  className="form-input pr-10"
+                />
+                <span className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-outline-variant">
+                  <IconKey size={16} />
+                </span>
+              </div>
+              <div className="mt-2 text-right">
+                <Link
+                  to="/reset-password"
+                  className="nav-link text-[0.8rem] uppercase tracking-wider opacity-80 text-amber no-underline inline-block"
+                >
+                  Forgot your security key?
+                </Link>
+              </div>
+            </div>
 
-          <form onSubmit={submit} className="flex flex-col gap-5">
-            <Field label="Email" required>
-              <TextInput
-                type="email"
-                value={email}
-                onChange={(e) => { setEmail(e.target.value); setError('') }}
-                placeholder="you@example.com"
-                autoFocus
-              />
-            </Field>
-            <Field label="Password" required>
-              <TextInput
-                type="password"
-                value={password}
-                onChange={(e) => { setPassword(e.target.value); setError('') }}
-                placeholder="••••••••"
-              />
-            </Field>
+            {/* Error line */}
+            {error && (
+              <div className="text-error text-[0.9rem] border-l-2 border-error pl-2 animate-pulse">
+                {error}
+              </div>
+            )}
 
-            {error && <p className="text-[0.82rem] text-amber-bright">{error}</p>}
-
-            <Button onClick={submit} className="w-full mt-1">Sign in</Button>
+            <div className="pt-4">
+              <button
+                type="submit"
+                disabled={submitting}
+                className="btn-lift w-full py-4 bg-gold text-ink font-semibold text-[0.8rem] uppercase tracking-[0.2em] flex items-center justify-center gap-2 hover:bg-primary transition-colors disabled:opacity-60"
+              >
+                {submitting ? 'Authenticating…' : 'Sign in'}
+                {!submitting && <IconArrowForward size={16} />}
+              </button>
+            </div>
           </form>
 
-          <p className="mt-7 text-center text-[0.8rem] text-gold-faint">
-            New to TerraVault?{' '}
-            <Link to="/register" className="text-amber hover:text-amber-bright no-underline">
-              Open your vault
-            </Link>
-          </p>
-        </div>
+          {/* Footer */}
+          <div className="mt-8 text-center border-t border-line-soft pt-6">
+            <p className="text-[0.95rem] text-on-surface-variant">
+              New to TerraVault?{' '}
+              <Link
+                to="/register"
+                className="nav-link text-[0.8rem] uppercase tracking-wider ml-1 text-amber no-underline inline-block"
+              >
+                Open your vault
+              </Link>
+            </p>
+          </div>
+        </Plate>
       </div>
     </main>
   )

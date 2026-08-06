@@ -3,54 +3,57 @@ import type { Property } from '../lib/types'
 import { formatArea, formatCoords, formatDate, formatCurrency } from '../lib/format'
 
 /**
- * Property record card — the recurring unit across Dashboard and
- * All Properties. Archive-plate treatment with corner ticks.
+ * Property record card — matches stitch_screens/05_all_properties.html:
+ * archive-plate with corner ticks, category label + status chip,
+ * serif gold title, 2×2 metadata grid, "Open →" footer.
  */
 export default function PropertyCard({ property }: { property: Property }) {
   return (
     <Link
       to={`/properties/${property.id}`}
-      className="group relative block border border-line bg-ink-soft hover:border-amber/60 transition-colors no-underline"
+      className="group relative block border border-line-soft bg-ink-card rounded-[2px] p-6 hover:border-line transition-colors duration-300 corner-ticks no-underline"
     >
-      <span className="absolute top-0 left-0 w-2.5 h-2.5 border-t border-l border-amber/70 group-hover:border-amber transition-colors pointer-events-none" aria-hidden="true" />
-      <span className="absolute top-0 right-0 w-2.5 h-2.5 border-t border-r border-amber/70 group-hover:border-amber transition-colors pointer-events-none" aria-hidden="true" />
-      <span className="absolute bottom-0 left-0 w-2.5 h-2.5 border-b border-l border-amber/70 group-hover:border-amber transition-colors pointer-events-none" aria-hidden="true" />
-      <span className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b border-r border-amber/70 group-hover:border-amber transition-colors pointer-events-none" aria-hidden="true" />
+      {/* hover-reveal full corner ticks */}
+      <span
+        className="absolute inset-0 pointer-events-none corner-ticks-tr-bl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        aria-hidden="true"
+      />
 
-      <div className="flex items-start justify-between gap-4 px-6 pt-6 pb-5 border-b border-line-soft">
-        <div>
-          <p className="text-[0.62rem] uppercase tracking-[0.24em] text-amber mb-2">{property.category}</p>
-          <h3 className="font-serif text-[1.35rem] text-gold group-hover:text-amber-bright transition-colors leading-snug">
-            {property.name}
-          </h3>
-        </div>
-        <span className="shrink-0 text-[0.68rem] uppercase tracking-[0.16em] text-gold-faint border border-line rounded-[2px] px-2.5 py-1.5">
+      <div className="flex items-start justify-between mb-6">
+        <span className="text-[0.62rem] uppercase tracking-[0.2em] text-on-surface-variant">{property.category}</span>
+        <span className="bg-[#17150f] border border-line-soft text-[0.62rem] uppercase tracking-[0.16em] text-amber px-2 py-1 rounded-[2px]">
           {property.ownership}
         </span>
       </div>
 
-      <div className="px-6 py-5 grid grid-cols-2 gap-x-6 gap-y-3.5 text-[0.78rem]">
+      <h2 className="font-serif text-[1.35rem] text-gold mb-8">{property.name}</h2>
+
+      <div className="grid grid-cols-2 gap-y-6 gap-x-4 mb-8">
         <div>
-          <p className="text-[0.6rem] uppercase tracking-[0.2em] text-gold-faint mb-1">Area</p>
-          <p className="text-gold">{formatArea(property.area, property.areaUnit)}</p>
+          <span className="block text-[0.6rem] uppercase tracking-[0.18em] text-on-surface-variant mb-1 font-semibold">Area</span>
+          <span className="text-[0.95rem] text-on-surface">{formatArea(property.area, property.areaUnit)}</span>
         </div>
         <div>
-          <p className="text-[0.6rem] uppercase tracking-[0.2em] text-gold-faint mb-1">Market value</p>
-          <p className="text-gold">{formatCurrency(property.marketValue, true)}</p>
+          <span className="block text-[0.6rem] uppercase tracking-[0.18em] text-on-surface-variant mb-1 font-semibold">Value</span>
+          <span className="text-[0.95rem] text-on-surface">{formatCurrency(property.marketValue ?? property.purchasePrice, true)}</span>
         </div>
         <div>
-          <p className="text-[0.6rem] uppercase tracking-[0.2em] text-gold-faint mb-1">Coordinates</p>
-          <p className="text-gold-dim">{formatCoords(property.latitude, property.longitude)}</p>
+          <span className="block text-[0.6rem] uppercase tracking-[0.18em] text-on-surface-variant mb-1 font-semibold">Coord</span>
+          <span className="text-[0.95rem] text-on-surface">{formatCoords(property.latitude, property.longitude)}</span>
         </div>
         <div>
-          <p className="text-[0.6rem] uppercase tracking-[0.2em] text-gold-faint mb-1">Acquired</p>
-          <p className="text-gold-dim">{formatDate(property.purchaseDate ?? property.createdAt)}</p>
+          <span className="block text-[0.6rem] uppercase tracking-[0.18em] text-on-surface-variant mb-1 font-semibold">Acquired</span>
+          <span className="text-[0.95rem] text-on-surface">{formatDate(property.purchaseDate ?? property.createdAt)}</span>
         </div>
       </div>
 
-      <div className="flex items-center justify-between px-6 pb-6 text-[0.7rem] uppercase tracking-[0.16em] text-gold-faint">
-        <span>{property.documents.length} documents · {property.visits.length} visits</span>
-        <span className="text-amber group-hover:text-amber-bright transition-colors">Open →</span>
+      <div className="border-t border-line-soft pt-4 flex justify-between items-center">
+        <span className="text-[0.68rem] uppercase tracking-[0.16em] text-on-surface-variant">
+          {property.documents.length} documents · {property.visits.length} visits
+        </span>
+        <span className="text-[0.8rem] text-amber flex items-center gap-1 group-hover:text-gold transition-colors">
+          Open →
+        </span>
       </div>
     </Link>
   )

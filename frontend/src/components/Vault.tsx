@@ -5,16 +5,17 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
 const DOCS = [
-  { name: 'Ownership.pdf', tag: 'Deed', meta: 'Registered 1998' },
-  { name: 'Survey.pdf', tag: 'Survey', meta: 'Khasra 214 · 2.4 ha' },
-  { name: 'TaxReceipt.pdf', tag: 'Receipt', meta: 'FY 2025–26' },
-  { name: 'Will.pdf', tag: 'Will', meta: 'Executed 2004' },
-  { name: 'ChainOfTitle.pdf', tag: 'History', meta: '6 entries' },
+  { name: 'Ownership.pdf (Deed)', tag: 'Primary', meta: '2.4 MB', primary: true },
+  { name: 'Survey.pdf', tag: '', meta: '2.4 MB', primary: false },
+  { name: 'TaxReceipt.pdf', tag: '', meta: '2023-24', primary: false },
+  { name: 'Will.pdf', tag: '', meta: 'Notarized', primary: false },
+  { name: 'ChainOfTitle.pdf', tag: '', meta: 'Historical', primary: false },
 ]
 
 /**
- * Vault — the archive. A paper-styled ledger that reveals its
- * document rows one by one as you scroll, then a metadata plate.
+ * Vault — the archive ledger, matching 01_landing.html:
+ * "One folder. Everything that matters." header, a paper-styled
+ * ledger card with document rows, and a sticky notes column.
  */
 export default function Vault() {
   const root = useRef<HTMLElement>(null)
@@ -51,55 +52,61 @@ export default function Vault() {
   return (
     <section ref={root} id="vault" className="bg-ink py-[var(--section-pad)] border-t border-line-soft">
       <div className="mx-auto w-[min(var(--maxw),100%-(var(--gutter)*2))]">
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-[clamp(2rem,6vw,6rem)] items-start mb-[clamp(3rem,8vh,6rem)]">
-          <p className="eyebrow" data-reveal>
-            01 — The Vault
-          </p>
-          <h2 className="serif text-[clamp(2.2rem,5vw,4rem)] leading-[1.05]" data-text-reveal>
-            One folder.
-            <br />
-            <em className="italic text-amber-bright">Everything</em> that matters.
-          </h2>
-        </div>
+        <h2 className="serif font-[380] text-[clamp(2rem,3.3vw,3rem)] leading-[1.15] mb-16 text-on-surface" data-text-reveal>
+          One folder. <em className="italic text-[#d4a845]">Everything</em> that matters.
+        </h2>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-[clamp(2.5rem,6vw,6rem)] items-start">
-          <div className="border border-line rounded-[4px] bg-gradient-to-b from-ink-soft to-ink overflow-hidden" data-ledger>
-            <div className="flex items-center justify-between gap-4 px-6 py-4 text-[0.72rem] uppercase tracking-[0.16em] text-gold-faint border-b border-line-soft">
-              <span>Property Vault / Village Property</span>
-              <span className="text-amber">05 documents</span>
-            </div>
-            {DOCS.map((d) => (
-              <div
-                className="grid grid-cols-[1fr_auto_auto] items-center gap-4 px-6 py-4 border-b border-line-soft last:border-b-0 hover:bg-amber/8 transition-colors"
-                data-ledger-row
-                key={d.name}
-              >
-                <span className="font-serif text-[1.05rem] text-gold">{d.name}</span>
-                <span className="text-[0.62rem] uppercase tracking-[0.14em] text-amber border border-line rounded-[2px] px-2 py-0.5">
-                  {d.tag}
-                </span>
-                <span className="text-[0.72rem] text-gold-faint">{d.meta}</span>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+          {/* Ledger card */}
+          <div className="lg:col-span-7">
+            <div className="relative bg-paper p-6 border border-line-soft rounded-[2px]" data-ledger>
+              <span className="hero__plate-corner hero__plate-corner--tl" />
+              <span className="hero__plate-corner hero__plate-corner--tr" />
+              <span className="hero__plate-corner hero__plate-corner--bl" />
+              <span className="hero__plate-corner hero__plate-corner--br" />
+              <div className="flex justify-between items-center border-b border-line-soft pb-4 mb-6">
+                <span className="text-[0.9rem] text-on-surface uppercase tracking-wider">Property Vault</span>
+                <span className="text-[0.68rem] uppercase tracking-[0.16em] text-gold-dim">Village Property · 05 documents</span>
               </div>
-            ))}
-            <div className="flex items-center justify-between gap-4 px-6 py-4 text-[0.72rem] uppercase tracking-[0.16em] text-gold-faint border-t border-line-soft">
-              <span>Visits /</span>
-              <span>2026 · 2027 · 2028</span>
+              <div className="flex flex-col gap-4">
+                {DOCS.map((d) => (
+                  <div
+                    className={`flex justify-between items-center p-3 ${d.primary ? 'bg-line-soft bg-opacity-30 rounded-[2px]' : 'border-b border-line-soft'}`}
+                    data-ledger-row
+                    key={d.name}
+                  >
+                    <span className="text-[0.95rem] text-on-surface">{d.name}</span>
+                    {d.primary ? (
+                      <span className="px-2 py-1 bg-amber text-ink text-[10px] font-bold rounded-[2px] uppercase">Primary</span>
+                    ) : (
+                      <span className="text-[0.68rem] uppercase tracking-[0.14em] text-gold-dim">{d.meta}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <div className="mt-8 pt-4 border-t border-line-soft flex gap-4 text-[0.68rem] uppercase tracking-[0.16em] text-gold-dim opacity-70">
+                <span>Visits /</span>
+                <span>2026</span>
+                <span>·</span>
+                <span>2027</span>
+                <span>·</span>
+                <span>2028</span>
+              </div>
             </div>
           </div>
 
-          <div className="lg:sticky lg:top-28" data-vault-notes>
-            <h3 className="serif text-[1.8rem] mb-4">Structured, not scattered</h3>
-            <p className="text-gold-dim leading-[1.7] max-w-[30rem] mb-7">
-              Every property is one folder in your Drive. Its documents carry
-              meaning — a deed, a survey, a receipt — instead of living as
-              unrecognisable filenames. Each visit becomes a dated record with
-              photographs and a position.
+          {/* Sticky notes */}
+          <div className="lg:col-span-5 lg:sticky lg:top-24 flex flex-col gap-4" data-vault-notes>
+            <h3 className="serif text-[1.8rem] mb-2">Structured, not scattered</h3>
+            <p className="text-gold-dim leading-[1.7] max-w-[30rem] mb-6">
+              Your land's entire history is organized into a single, indestructible physical ledger.
+              No more searching through dusty boxes or expired digital links.
             </p>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 mt-4">
               {['Deed', 'Survey', 'Will', 'Receipt', 'Photos', 'GPS'].map((chip) => (
                 <span
                   key={chip}
-                  className="text-[0.68rem] uppercase tracking-[0.12em] text-gold-dim border border-line rounded-[2px] px-2.5 py-1.5"
+                  className="px-3 py-1.5 border border-line-soft text-[0.8rem] text-on-surface-variant rounded-full"
                 >
                   {chip}
                 </span>

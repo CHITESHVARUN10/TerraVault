@@ -1,9 +1,8 @@
 import { useRef, useState } from 'react'
 import Dialog from '../ui/Dialog'
-import { Button } from '../ui/Button'
-import { Field, Select } from '../ui/Field'
 import { useStore } from '../../lib/store'
 import type { DocumentType } from '../../lib/types'
+import { IconDescription, IconArrowDropDown } from '../icons'
 
 const DOC_TYPES: DocumentType[] = [
   'Ownership Deed',
@@ -17,6 +16,12 @@ const DOC_TYPES: DocumentType[] = [
   'Other',
 ]
 
+/**
+ * Add document — matches stitch_screens/10_add_document.html:
+ * FILE REPOSITORY eyebrow, custom-chevron select, dashed dropzone
+ * with description icon + file name/size + Change File,
+ * Cancel + "Store in Vault".
+ */
 export default function AddDocumentDialog({
   open,
   onClose,
@@ -56,41 +61,78 @@ export default function AddDocumentDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      title="Add a document"
-      eyebrow="Vault · Document"
+      title="Add Document"
+      eyebrow="File repository"
       footer={
         <>
-          <Button variant="ghost" onClick={onClose}>Cancel</Button>
-          <Button onClick={submit}>Store in vault</Button>
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-6 py-3 border border-line text-amber text-[0.78rem] font-semibold uppercase tracking-[0.1em] hover:bg-ink-card hover:text-gold transition-all duration-300 cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={submit}
+            className="btn-lift px-6 py-3 bg-gold text-ink text-[0.78rem] font-semibold uppercase tracking-[0.1em] hover:bg-primary transition-all duration-300 cursor-pointer"
+          >
+            Store in Vault
+          </button>
         </>
       }
     >
-      <form onSubmit={submit} className="flex flex-col gap-5">
-        <Field label="Document type" hint="Files are kept under a meaningful type">
-          <Select value={type} onChange={(e) => setType(e.target.value as DocumentType)}>
-            {DOC_TYPES.map((t) => (
-              <option key={t} value={t}>{t}</option>
-            ))}
-          </Select>
-        </Field>
-
-        <Field label="File" required>
-          <label className="flex flex-col items-center justify-center gap-2 border border-dashed border-line rounded-[2px] px-6 py-8 text-center cursor-pointer hover:border-amber transition-colors">
-            <input
-              ref={inputRef}
-              type="file"
-              className="hidden"
-              onChange={pickFile}
-            />
-            <span className="text-amber text-lg leading-none">＋</span>
-            <span className="text-[0.85rem] text-gold-dim">
-              {fileName || 'Choose a PDF, image or file'}
-            </span>
-            {size && <span className="text-[0.7rem] text-gold-faint">{size}</span>}
+      <form onSubmit={submit} className="flex flex-col gap-6 mt-2">
+        {/* Document type */}
+        <div className="flex flex-col gap-2">
+          <label className="text-[0.68rem] uppercase tracking-[0.18em] text-on-surface-variant font-semibold" htmlFor="doc-type">
+            Document type
           </label>
-        </Field>
+          <div className="relative">
+            <select
+              id="doc-type"
+              value={type}
+              onChange={(e) => setType(e.target.value as DocumentType)}
+              className="w-full bg-transparent border-b border-line-soft hover:border-line focus:border-amber focus:outline-none text-on-surface font-body-md text-[1rem] py-3 px-0 cursor-pointer transition-colors duration-200 appearance-none pr-6"
+            >
+              {DOC_TYPES.map((t) => (
+                <option key={t} value={t} className="bg-surface text-on-surface">{t}</option>
+              ))}
+            </select>
+            <span className="absolute right-0 top-1/2 -translate-y-1/2 text-amber pointer-events-none">
+              <IconArrowDropDown size={18} />
+            </span>
+          </div>
+        </div>
 
-        {error && <p className="text-[0.82rem] text-amber-bright">{error}</p>}
+        {/* File dropzone */}
+        <div className="flex flex-col gap-2">
+          <label className="text-[0.68rem] uppercase tracking-[0.18em] text-on-surface-variant font-semibold">File upload</label>
+          <label className="w-full border border-dashed border-line p-6 flex flex-col items-center justify-center bg-paper hover:border-amber transition-colors duration-300 cursor-pointer text-center">
+            <input ref={inputRef} type="file" className="hidden" onChange={pickFile} />
+            {fileName ? (
+              <div className="flex flex-col items-center gap-3 text-center">
+                <IconDescription size={36} className="text-amber" filled />
+                <div>
+                  <p className="text-[0.95rem] text-on-surface">{fileName}</p>
+                  <p className="text-[0.8rem] text-on-surface-variant mt-1">{size}</p>
+                </div>
+                <span className="mt-2 text-[0.8rem] text-amber hover:text-gold underline underline-offset-4 transition-all">
+                  Change File
+                </span>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center gap-3 text-center">
+                <IconDescription size={36} className="text-amber" filled />
+                <div>
+                  <p className="text-[0.95rem] text-on-surface">Choose a PDF, image or file</p>
+                </div>
+              </div>
+            )}
+          </label>
+        </div>
+
+        {error && <p className="text-error text-[0.85rem]">{error}</p>}
       </form>
     </Dialog>
   )

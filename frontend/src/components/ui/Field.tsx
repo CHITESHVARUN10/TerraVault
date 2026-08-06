@@ -52,3 +52,19 @@ export function Select(props: React.SelectHTMLAttributes<HTMLSelectElement>) {
 export function TextArea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
   return <textarea {...props} className={`${inputBase} resize-y min-h-[90px] ${props.className ?? ''}`} />
 }
+
+/** Borderless underline input used by register / profile / add-property dialogs. */
+export function UnderlineInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
+  return <input {...props} className={`input-underline ${props.className ?? ''}`} />
+}
+
+export function UnderlineSelect(props: React.SelectHTMLAttributes<HTMLSelectElement>) {
+  return (
+    <select
+      {...props}
+      className={`input-underline appearance-none cursor-pointer bg-transparent ${props.className ?? ''}`}
+    >
+      {props.children}
+    </select>
+  )
+}

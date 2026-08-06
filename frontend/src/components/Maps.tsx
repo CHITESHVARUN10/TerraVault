@@ -2,12 +2,16 @@ import { useRef, useEffect } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ContourField } from './Contours'
+import { IconLocation } from './icons'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const ROUTE =
-  'M 100 640 C 220 560, 300 620, 420 520 C 540 420, 660 480, 780 400 C 900 320, 1020 380, 1100 300'
-
+/**
+ * Maps — matches 01_landing.html Section 03: full-screen centered
+ * layout, contour + dot-grid + dashed route background, gold pin
+ * circle, and a bottom coordinates readout. Scroll-scrubbed
+ * route draw, pin travel, and lat/lng counters.
+ */
 export default function Maps() {
   const root = useRef<HTMLElement>(null)
 
@@ -68,50 +72,56 @@ export default function Maps() {
   }, [])
 
   return (
-    <section ref={root} id="maps" className="relative min-h-screen flex items-center overflow-hidden bg-ink text-gold">
+    <section
+      ref={root}
+      id="maps"
+      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-ink text-gold border-t border-line-soft"
+    >
+      {/* Background layers */}
       <div className="absolute inset-0 z-0 opacity-55" aria-hidden="true">
         <ContourField variant="gold" />
       </div>
+      <div
+        className="absolute inset-0 z-[1] opacity-10"
+        aria-hidden="true"
+        style={{ backgroundImage: 'radial-gradient(#d4a845 0.5px, transparent 0.5px)', backgroundSize: '40px 40px' }}
+      />
+      {/* Winding route */}
+      <svg
+        className="absolute inset-0 w-full h-full pointer-events-none z-[2]"
+        preserveAspectRatio="none"
+        viewBox="0 0 1000 1000"
+        aria-hidden="true"
+      >
+        <path
+          d="M 100,800 Q 300,700 500,850 T 900,600"
+          fill="none"
+          opacity="0.4"
+          stroke="#d4a845"
+          strokeDasharray="8,8"
+          strokeWidth="1.5"
+          data-map-route
+        />
+      </svg>
 
-      <div className="absolute inset-0 z-[1]" aria-hidden="true">
-        <svg viewBox="0 0 1200 800" fill="none" preserveAspectRatio="xMidYMid slice" className="w-full h-full">
-          <path d={ROUTE} stroke="#2e2a20" strokeWidth="1.5" strokeDasharray="6 8" data-map-route />
-          <g data-map-pin style={{ offsetPath: `path('${ROUTE}')`, offsetRotate: '0deg' }}>
-            <circle cx="0" cy="0" r="10" fill="#d4a845" opacity="0.25" />
-            <circle cx="0" cy="0" r="4.5" fill="#eec76f" />
-          </g>
-        </svg>
-        <div className="absolute inset-0 maps__grid" />
-      </div>
-
-      <div className="relative z-[2] mx-auto flex flex-col justify-between gap-16 min-h-[70vh] py-[clamp(4rem,10vh,7rem)] w-[min(var(--maxw),100%-(var(--gutter)*2))]">
-        <div>
-          <p className="eyebrow" data-reveal>
-            03 — Maps
-          </p>
-          <h2 className="serif text-[clamp(2.6rem,6vw,5rem)] leading-[1.02] mt-3 text-gold" data-text-reveal>
-            Your property,
-            <br />
-            <em className="italic text-amber-bright">from above.</em>
-          </h2>
-        </div>
-
-        <div className="flex flex-wrap items-end justify-between gap-8">
-          <p className="max-w-[28rem] text-gold-dim leading-[1.7]" data-reveal>
-            Coordinates anchor every property. On the map, on the ground, and in
-            the years of visits — one place, always findable.
-          </p>
-          <div className="flex gap-6 font-sans" data-reveal>
-            <div className="flex flex-col gap-0.5 text-[0.9rem] tracking-[0.08em] text-gold">
-              <span className="text-[0.62rem] uppercase tracking-[0.24em] text-amber">Lat</span>
-              <span data-map-lat>28.6129° N</span>
-            </div>
-            <div className="flex flex-col gap-0.5 text-[0.9rem] tracking-[0.08em] text-gold">
-              <span className="text-[0.62rem] uppercase tracking-[0.24em] text-amber">Lng</span>
-              <span data-map-lng>77.2295° E</span>
-            </div>
+      {/* Center content */}
+      <div className="relative z-10 text-center px-[var(--gutter)]">
+        <p className="eyebrow mb-4" data-reveal>
+          Section — 03 Maps
+        </p>
+        <h2 className="serif font-[380] text-[clamp(2.25rem,4.4vw,4rem)] leading-[1.1] text-on-surface" data-text-reveal>
+          Your property, from <em className="italic text-[#d4a845]">above</em>.
+        </h2>
+        <div className="mt-8 flex justify-center" data-reveal>
+          <div className="bg-gold p-1 rounded-full">
+            <IconLocation size={24} className="text-ink" filled />
           </div>
         </div>
+      </div>
+
+      {/* Footer coordinates */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[0.8rem] tracking-widest text-amber opacity-80">
+        <span data-map-lat>28.6129° N</span> / <span data-map-lng>77.2295° E</span>
       </div>
     </section>
   )

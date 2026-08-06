@@ -7,6 +7,9 @@ import Landing from './pages/Landing'
 // Auth
 import Login from './pages/Login'
 import Register from './pages/Register'
+import ResetPassword from './pages/ResetPassword'
+import CheckEmail from './pages/CheckEmail'
+import NotFound from './pages/NotFound'
 // App
 import Dashboard from './pages/Dashboard'
 import Properties from './pages/Properties'
@@ -22,6 +25,8 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/check-email" element={<CheckEmail />} />
           <Route element={<AppShell />}>
             <Route
               path="/dashboard"
@@ -57,7 +62,7 @@ function App() {
             />
             <Route path="/contact" element={<Contact />} />
           </Route>
-          <Route path="*" element={<Login />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </StoreProvider>
