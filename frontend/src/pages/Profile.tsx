@@ -86,7 +86,9 @@ export default function Profile() {
                     <div>
                       <h3 className="text-[0.95rem] text-on-surface">Google Drive Integration</h3>
                       <p className="text-[0.85rem] text-on-surface-variant mt-1">
-                        {drive.connected ? `${drive.email} • /${drive.folderName}_Archive` : 'Not connected yet'}
+                        {drive.connected
+                          ? `${drive.email} • /${drive.folderName.replace(/_Archive$/, '')}_Archive`
+                          : 'Not connected yet'}
                       </p>
                     </div>
                     <button onClick={() => setDriveOpen(true)} className="text-[0.8rem] text-amber nav-link hidden md:block cursor-pointer">
