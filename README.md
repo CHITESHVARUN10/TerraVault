@@ -35,15 +35,22 @@ TerraVault keeps every document, every coordinate, and every visit — held in o
 |---|---|
 | Web frontend | React, TypeScript, Vite, Tailwind CSS v4, GSAP, Lenis smooth scroll |
 | Mobile (future) | React Native with native Apple Maps / Google Maps, camera, GPS |
-| Backend (future) | Bun runtime, modular architecture |
-| Authentication (future) | Passport.js (app auth) + Google OAuth (Drive access) |
+| Backend | Node.js, Express, Passport.js (sessions), MongoDB (in `backend/`) |
+| Authentication | Passport.js (app auth) + Google OAuth (Drive access, future) |
 | Cloud storage | The user's own Google Drive (no server-side persistence of property data) |
 
 ## Getting started
 
 ```bash
+# frontend
 cd frontend
 npm install
+npm run dev
+
+# backend (requires local MongoDB on 127.0.0.1:27017)
+cd backend
+npm install
+cp .env.example .env
 npm run dev
 ```
 
@@ -65,7 +72,7 @@ npm run build
 - [x] Profile, contact
 - [x] Dialogs (add property, add document, add visit, connect drive, confirm)
 - [x] Unified dark + gold design system
-- [ ] Backend (Bun)
+- [ ] Backend (Node.js — auth + properties done in `backend/`)
 - [ ] Google Drive integration
 - [ ] Mobile app (React Native)
 
