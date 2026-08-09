@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Dialog from '../ui/Dialog'
-import { useStore } from '../../lib/store'
+import { useDrive } from '../../contexts'
 import { formatBytes } from '../../lib/format'
 import {
   IconShield,
@@ -23,17 +23,27 @@ export default function ConnectDriveDialog({
   open: boolean
   onClose: () => void
 }) {
-  const { drive, connectDrive, disconnectDrive } = useStore()
-  const [connected, setConnected] = useState(drive.connected)
+  const { drive, connect, disconnect } = useDrive()
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
 
   const handleConnect = () => {
-    connectDrive()
-    setConnected(true)
+    setBusy(true)
+    setError('')
+    // Full-page OAuth flow: backend → Google consent → callback → here.
+    connect(window.location.pathname)
   }
 
-  const handleDisconnect = () => {
-    disconnectDrive()
-    setConnected(false)
+  const handleDisconnect = async () => {
+    setBusy(true)
+    setError('')
+    try {
+      await disconnect()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to disconnect.')
+    } finally {
+      setBusy(false)
+    }
   }
 
   const usagePct = drive.quotaBytes ? Math.min(100, (drive.usedBytes / drive.quotaBytes) * 100) : 0
@@ -42,10 +52,10 @@ export default function ConnectDriveDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      title={connected ? 'Drive connected' : 'Connect Archive Repository'}
+      title={drive.connected ? 'Drive connected' : 'Connect Archive Repository'}
       eyebrow="External storage"
     >
-      {connected ? (
+      {drive.connected ? (
         <div className="flex flex-col items-center gap-6">
           <IconCheckCircle size={40} className="text-gold-faint" />
           <div className="text-center space-y-1">
@@ -68,12 +78,15 @@ export default function ConnectDriveDialog({
             </div>
           </div>
 
+          {error && <p className="text-error text-[0.85rem]">{error}</p>}
+
           <button
             type="button"
             onClick={handleDisconnect}
-            className="btn-lift w-full py-3 px-6 border border-line text-error text-[0.78rem] font-semibold uppercase tracking-[0.14em] hover:bg-ink-card transition-colors duration-200 cursor-pointer"
+            disabled={busy}
+            className="btn-lift w-full py-3 px-6 border border-line text-error text-[0.78rem] font-semibold uppercase tracking-[0.14em] hover:bg-ink-card transition-colors duration-200 cursor-pointer disabled:opacity-60"
           >
-            Disconnect
+            {busy ? 'Disconnecting…' : 'Disconnect'}
           </button>
         </div>
       ) : (
@@ -108,14 +121,17 @@ export default function ConnectDriveDialog({
             </li>
           </ul>
 
+          {error && <p className="text-error text-[0.85rem]">{error}</p>}
+
           <div className="flex flex-col gap-4 mt-4">
             <button
               type="button"
               onClick={handleConnect}
-              className="btn-lift w-full flex items-center justify-center gap-2 bg-gold text-ink text-[0.8rem] font-semibold uppercase tracking-[0.12em] py-3 px-6 hover:bg-primary transition-colors cursor-pointer"
+              disabled={busy}
+              className="btn-lift w-full flex items-center justify-center gap-2 bg-gold text-ink text-[0.8rem] font-semibold uppercase tracking-[0.12em] py-3 px-6 hover:bg-primary transition-colors cursor-pointer disabled:opacity-60"
             >
               <IconGoogle size={20} />
-              Connect with Google
+              {busy ? 'Redirecting to Google…' : 'Connect with Google'}
             </button>
             <button
               type="button"

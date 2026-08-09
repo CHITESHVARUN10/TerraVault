@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { useStore } from '../lib/store'
+import { useProperties } from '../contexts'
 import { PageFrame } from '../components/ui/PageFrame'
 import { Button } from '../components/ui/Button'
 import AddDocumentDialog from '../components/dialogs/AddDocumentDialog'
@@ -30,7 +30,7 @@ import type { Property } from '../lib/types'
 export default function PropertyDetail() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { properties, deleteProperty, deleteDocument, deleteVisit } = useStore()
+  const { properties, remove, removeDocument, removeVisit } = useProperties()
   const [docOpen, setDocOpen] = useState(false)
   const [visitOpen, setVisitOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
@@ -166,7 +166,7 @@ export default function PropertyDetail() {
                         </div>
                       </div>
                       <button
-                        onClick={() => deleteDocument(property.id, d.id)}
+                        onClick={() => removeDocument(property.id, d.id)}
                         className="text-[0.7rem] uppercase tracking-wider text-outline hover:text-error transition-colors cursor-pointer"
                       >
                         Remove
@@ -203,7 +203,7 @@ export default function PropertyDetail() {
                         <div className="flex justify-between items-start mb-2">
                           <p className="text-[0.68rem] uppercase tracking-[0.2em] text-amber font-semibold">{formatDate(v.date)}</p>
                           <button
-                            onClick={() => deleteVisit(property.id, v.id)}
+                            onClick={() => removeVisit(property.id, v.id)}
                             className="text-[0.7rem] uppercase tracking-wider text-outline hover:text-error transition-colors cursor-pointer"
                           >
                             Remove
@@ -262,8 +262,8 @@ export default function PropertyDetail() {
         <ConfirmDialog
           open={deleteOpen}
           onClose={() => setDeleteOpen(false)}
-          onConfirm={() => {
-            deleteProperty(property.id)
+          onConfirm={async () => {
+            await remove(property.id)
             navigate('/properties')
           }}
           title="Confirm Record Deletion"

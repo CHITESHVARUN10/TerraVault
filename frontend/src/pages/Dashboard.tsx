@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useStore } from '../lib/store'
+import { useAuth, useProperties, useDrive } from '../contexts'
 import { PageFrame } from '../components/ui/PageFrame'
 import { Button } from '../components/ui/Button'
 import PropertyCard from '../components/PropertyCard'
@@ -16,7 +16,9 @@ import { formatCurrency, formatNumber } from '../lib/format'
  * drive status plate with ticks, recent records cards.
  */
 export default function Dashboard() {
-  const { user, properties, drive } = useStore()
+  const { user } = useAuth()
+  const { properties } = useProperties()
+  const { drive } = useDrive()
   const [addOpen, setAddOpen] = useState(false)
   const [driveOpen, setDriveOpen] = useState(false)
 

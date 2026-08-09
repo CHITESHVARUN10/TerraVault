@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { StoreProvider } from './lib/store'
+import { AppProviders } from './contexts'
 import { AppShell, RequireAuth } from './components/AppShell'
 
 // Landing
@@ -19,7 +19,7 @@ import Contact from './pages/Contact'
 
 function App() {
   return (
-    <StoreProvider>
+    <AppProviders>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Landing />} />
@@ -65,7 +65,7 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
-    </StoreProvider>
+    </AppProviders>
   )
 }
 

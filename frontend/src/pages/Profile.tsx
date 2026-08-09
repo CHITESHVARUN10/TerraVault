@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useStore } from '../lib/store'
+import { useAuth, useProperties, useDrive } from '../contexts'
 import { PageFrame } from '../components/ui/PageFrame'
 import { Button } from '../components/ui/Button'
 import { UnderlineInput } from '../components/ui/Field'
@@ -15,7 +15,9 @@ import { formatBytes, formatDate } from '../lib/format'
  * capacity bar, identity plate, vault summary, zero-trust note.
  */
 export default function Profile() {
-  const { user, drive, properties } = useStore()
+  const { user } = useAuth()
+  const { properties } = useProperties()
+  const { drive } = useDrive()
   const [driveOpen, setDriveOpen] = useState(false)
   const [name, setName] = useState(user?.name ?? '')
   const [saved, setSaved] = useState(false)

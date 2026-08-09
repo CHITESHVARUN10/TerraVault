@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { useStore } from '../lib/store'
+import { useAuth } from '../contexts'
 import { IconLandscape } from './icons'
 
 /**
@@ -9,7 +9,7 @@ import { IconLandscape } from './icons'
  * gold "Access Vault" button. Fixed, frosted when scrolled.
  */
 export default function Nav() {
-  const { user, logout } = useStore()
+  const { user, logout } = useAuth()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()

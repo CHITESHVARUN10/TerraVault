@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import Dialog from '../ui/Dialog'
-import { useStore } from '../../lib/store'
+import { useProperties } from '../../contexts'
 import type { DocumentType } from '../../lib/types'
 import { IconDescription, IconArrowDropDown } from '../icons'
 
@@ -20,7 +20,8 @@ const DOC_TYPES: DocumentType[] = [
  * Add document — matches stitch_screens/10_add_document.html:
  * FILE REPOSITORY eyebrow, custom-chevron select, dashed dropzone
  * with description icon + file name/size + Change File,
- * Cancel + "Store in Vault".
+ * Cancel + "Store in Vault". Uploads the real file via the
+ * Properties context (Drive) and records it on the property.
  */
 export default function AddDocumentDialog({
   open,
@@ -31,30 +32,40 @@ export default function AddDocumentDialog({
   onClose: () => void
   propertyId: string
 }) {
-  const { addDocument } = useStore()
+  const { uploadDocument } = useProperties()
   const [type, setType] = useState<DocumentType>('Ownership Deed')
-  const [fileName, setFileName] = useState('')
+  const [file, setFile] = useState<File | null>(null)
   const [size, setSize] = useState('')
   const [error, setError] = useState('')
+  const [uploading, setUploading] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const pickFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    setFileName(file.name)
-    const mb = file.size / (1024 * 1024)
-    setSize(mb < 1 ? `${Math.round(file.size / 1024)} KB` : `${mb.toFixed(1)} MB`)
+    const f = e.target.files?.[0]
+    if (!f) return
+    setFile(f)
+    const mb = f.size / (1024 * 1024)
+    setSize(mb < 1 ? `${Math.round(f.size / 1024)} KB` : `${mb.toFixed(1)} MB`)
     setError('')
   }
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!fileName) return setError('Choose a file to upload.')
-    addDocument(propertyId, { name: fileName, type, size: size || '—' })
-    setFileName('')
-    setSize('')
-    if (inputRef.current) inputRef.current.value = ''
-    onClose()
+    if (!file) return setError('Choose a file to upload.')
+    if (uploading) return
+    setUploading(true)
+    setError('')
+    try {
+      await uploadDocument(propertyId, file, type)
+      setFile(null)
+      setSize('')
+      if (inputRef.current) inputRef.current.value = ''
+      onClose()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Upload failed. Is Google Drive connected?')
+    } finally {
+      setUploading(false)
+    }
   }
 
   return (
@@ -68,16 +79,18 @@ export default function AddDocumentDialog({
           <button
             type="button"
             onClick={onClose}
-            className="px-6 py-3 border border-line text-amber text-[0.78rem] font-semibold uppercase tracking-[0.1em] hover:bg-ink-card hover:text-gold transition-all duration-300 cursor-pointer"
+            disabled={uploading}
+            className="px-6 py-3 border border-line text-amber text-[0.78rem] font-semibold uppercase tracking-[0.1em] hover:bg-ink-card hover:text-gold transition-all duration-300 cursor-pointer disabled:opacity-60"
           >
             Cancel
           </button>
           <button
             type="button"
             onClick={submit}
-            className="btn-lift px-6 py-3 bg-gold text-ink text-[0.78rem] font-semibold uppercase tracking-[0.1em] hover:bg-primary transition-all duration-300 cursor-pointer"
+            disabled={uploading || !file}
+            className="btn-lift px-6 py-3 bg-gold text-ink text-[0.78rem] font-semibold uppercase tracking-[0.1em] hover:bg-primary transition-all duration-300 cursor-pointer disabled:opacity-60"
           >
-            Store in Vault
+            {uploading ? 'Uploading…' : 'Store in Vault'}
           </button>
         </>
       }
@@ -110,11 +123,11 @@ export default function AddDocumentDialog({
           <label className="text-[0.68rem] uppercase tracking-[0.18em] text-on-surface-variant font-semibold">File upload</label>
           <label className="w-full border border-dashed border-line p-6 flex flex-col items-center justify-center bg-paper hover:border-amber transition-colors duration-300 cursor-pointer text-center">
             <input ref={inputRef} type="file" className="hidden" onChange={pickFile} />
-            {fileName ? (
+            {file ? (
               <div className="flex flex-col items-center gap-3 text-center">
                 <IconDescription size={36} className="text-amber" filled />
                 <div>
-                  <p className="text-[0.95rem] text-on-surface">{fileName}</p>
+                  <p className="text-[0.95rem] text-on-surface">{file.name}</p>
                   <p className="text-[0.8rem] text-on-surface-variant mt-1">{size}</p>
                 </div>
                 <span className="mt-2 text-[0.8rem] text-amber hover:text-gold underline underline-offset-4 transition-all">

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Dialog from '../ui/Dialog'
-import { useStore } from '../../lib/store'
+import { useProperties } from '../../contexts'
 import { IconCalendarToday, IconInfo } from '../icons'
 
 /**
@@ -22,7 +22,7 @@ export default function AddVisitDialog({
   defaultLat: number
   defaultLng: number
 }) {
-  const { addVisit } = useStore()
+  const { addVisit } = useProperties()
   const [form, setForm] = useState({
     date: new Date().toISOString().slice(0, 10),
     latitude: String(defaultLat),
@@ -30,6 +30,7 @@ export default function AddVisitDialog({
     note: '',
   })
   const [error, setError] = useState('')
+  const [saving, setSaving] = useState(false)
 
   const set =
     (key: keyof typeof form) =>
@@ -38,20 +39,29 @@ export default function AddVisitDialog({
       setError('')
     }
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (saving) return
     const lat = parseFloat(form.latitude)
     const lng = parseFloat(form.longitude)
     if (Number.isNaN(lat) || Number.isNaN(lng))
       return setError('Enter valid GPS coordinates for this visit.')
-    addVisit(propertyId, {
-      date: form.date,
-      note: form.note.trim() || 'Site visit',
-      latitude: lat,
-      longitude: lng,
-    })
-    setForm({ date: new Date().toISOString().slice(0, 10), latitude: String(defaultLat), longitude: String(defaultLng), note: '' })
-    onClose()
+    setSaving(true)
+    setError('')
+    try {
+      await addVisit(propertyId, {
+        date: form.date,
+        note: form.note.trim() || 'Site visit',
+        latitude: lat,
+        longitude: lng,
+      })
+      setForm({ date: new Date().toISOString().slice(0, 10), latitude: String(defaultLat), longitude: String(defaultLng), note: '' })
+      onClose()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save the visit.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   const fieldBox =
@@ -75,9 +85,10 @@ export default function AddVisitDialog({
           <button
             type="button"
             onClick={submit}
-            className="btn-lift px-6 py-2.5 text-[0.8rem] font-semibold bg-gold text-ink hover:bg-primary transition-colors rounded-[2px] shadow-[0_0_15px_rgba(232,200,119,0.1)] cursor-pointer"
+            disabled={saving}
+            className="btn-lift px-6 py-2.5 text-[0.8rem] font-semibold bg-gold text-ink hover:bg-primary transition-colors rounded-[2px] shadow-[0_0_15px_rgba(232,200,119,0.1)] cursor-pointer disabled:opacity-60"
           >
-            Save log
+            {saving ? 'Saving…' : 'Save log'}
           </button>
         </>
       }

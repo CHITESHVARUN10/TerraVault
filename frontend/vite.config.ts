@@ -10,4 +10,10 @@ export default defineConfig({
     babel({ presets: [reactCompilerPreset()] }),
     tailwindcss(),
   ],
+  server: {
+    proxy: {
+      // Forward API calls to the Node backend during development.
+      '/api': 'http://localhost:4000',
+    },
+  },
 })

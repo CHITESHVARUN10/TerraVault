@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
-import { useStore } from '../lib/store'
+import { useAuth } from '../contexts'
 import Plate from '../components/ui/Plate'
 import { IconMail, IconKey, IconArrowForward } from '../components/icons'
 
@@ -10,7 +10,7 @@ import { IconMail, IconKey, IconArrowForward } from '../components/icons'
  * link, gold full-width submit, error line, footer CTA.
  */
 export default function Login() {
-  const { user, login } = useStore()
+  const { user, login } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const [email, setEmail] = useState('')
@@ -22,16 +22,17 @@ export default function Login() {
 
   if (user) return <Navigate to={from} replace />
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSubmitting(true)
-    // Test mode: an empty form signs straight into the demo account.
-    const result = login(email.trim(), password)
-    if (!result.ok) {
+    setError('')
+    try {
+      await login(email.trim(), password)
+      navigate(from, { replace: true })
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Invalid credentials or unaligned coordinates.')
       setSubmitting(false)
-      return setError(result.error ?? 'Invalid credentials or unaligned coordinates.')
     }
-    navigate(from, { replace: true })
   }
 
   return (

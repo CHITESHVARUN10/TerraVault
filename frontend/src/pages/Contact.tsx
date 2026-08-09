@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useStore } from '../lib/store'
+import { useAuth } from '../contexts'
 import { PageFrame } from '../components/ui/PageFrame'
 import { UnderlineInput } from '../components/ui/Field'
 import PageEnter from '../components/PageEnter'
@@ -11,7 +11,7 @@ import PageEnter from '../components/PageEnter'
  * info plates (Direct Inquiry / Registry Latency / Secure Protocol).
  */
 export default function Contact() {
-  const { user } = useStore()
+  const { user } = useAuth()
   const [form, setForm] = useState({
     name: user?.name ?? '',
     email: user?.email ?? '',

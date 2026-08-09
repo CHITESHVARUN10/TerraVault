@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { useStore } from '../lib/store'
+import { useProperties } from '../contexts'
 import { PageFrame } from '../components/ui/PageFrame'
 import { Button } from '../components/ui/Button'
 import PropertyCard from '../components/PropertyCard'
@@ -15,7 +15,7 @@ const CATEGORY_FILTERS = ['All', 'Agricultural Land', 'Residential Plot', 'Comme
  * card grid, "No matches found" empty state.
  */
 export default function Properties() {
-  const { properties } = useStore()
+  const { properties } = useProperties()
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('All')
   const [addOpen, setAddOpen] = useState(false)

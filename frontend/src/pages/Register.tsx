@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
-import { useStore } from '../lib/store'
+import { useAuth } from '../contexts'
 import Plate from '../components/ui/Plate'
 
 /**
@@ -9,20 +9,27 @@ import Plate from '../components/ui/Plate'
  * noise-texture background.
  */
 export default function Register() {
-  const { user, register } = useStore()
+  const { user, register } = useAuth()
   const navigate = useNavigate()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
 
   if (user) return <Navigate to="/dashboard" replace />
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const result = register(name, email, password)
-    if (!result.ok) return setError(result.error ?? 'Something went wrong.')
-    navigate('/dashboard', { replace: true })
+    setSubmitting(true)
+    setError('')
+    try {
+      await register(name, email, password)
+      navigate('/dashboard', { replace: true })
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong.')
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -98,9 +105,10 @@ export default function Register() {
 
             <button
               type="submit"
-              className="btn-lift w-full py-3.5 mt-2 bg-gold text-ink font-semibold text-[0.8rem] uppercase tracking-[0.2em] hover:bg-primary transition-colors"
+              disabled={submitting}
+              className="btn-lift w-full py-3.5 mt-2 bg-gold text-ink font-semibold text-[0.8rem] uppercase tracking-[0.2em] hover:bg-primary transition-colors disabled:opacity-60"
             >
-              Create account
+              {submitting ? 'Creating vault…' : 'Create account'}
             </button>
           </form>
 

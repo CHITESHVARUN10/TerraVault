@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Dialog from '../ui/Dialog'
 import { UnderlineSelect } from '../ui/Field'
-import { useStore } from '../../lib/store'
+import { useProperties } from '../../contexts'
 import type { PropertyCategory, OwnershipType } from '../../lib/types'
 
 const CATEGORIES: PropertyCategory[] = [
@@ -30,7 +30,7 @@ export default function AddPropertyDialog({
   open: boolean
   onClose: () => void
 }) {
-  const { addProperty } = useStore()
+  const { create } = useProperties()
   const [form, setForm] = useState({
     name: '',
     category: '' as PropertyCategory | '',
@@ -46,6 +46,7 @@ export default function AddPropertyDialog({
     notes: '',
   })
   const [error, setError] = useState('')
+  const [saving, setSaving] = useState(false)
 
   const set =
     (key: keyof typeof form) =>
@@ -54,8 +55,9 @@ export default function AddPropertyDialog({
       setError('')
     }
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (saving) return
     const name = form.name.trim()
     if (!name) return setError('Give this property a name — e.g. "Village Property".')
     const area = parseFloat(form.area)
@@ -65,35 +67,43 @@ export default function AddPropertyDialog({
     if (Number.isNaN(lat) || Number.isNaN(lng))
       return setError('Enter GPS coordinates so your property stays findable.')
 
-    addProperty({
-      name,
-      category: (form.category || 'Other') as PropertyCategory,
-      ownership: (form.ownership || 'Purchased') as OwnershipType,
-      area,
-      areaUnit: form.areaUnit,
-      purchaseDate: form.purchaseDate || undefined,
-      purchasePrice: form.purchasePrice ? parseFloat(form.purchasePrice) : undefined,
-      marketValue: form.marketValue ? parseFloat(form.marketValue) : undefined,
-      previousOwner: form.previousOwner.trim() || undefined,
-      notes: form.notes.trim() || undefined,
-      latitude: lat,
-      longitude: lng,
-    })
-    setForm({
-      name: '',
-      category: '',
-      ownership: '',
-      area: '',
-      areaUnit: 'acres',
-      purchaseDate: '',
-      purchasePrice: '',
-      marketValue: '',
-      previousOwner: '',
-      latitude: '',
-      longitude: '',
-      notes: '',
-    })
-    onClose()
+    setSaving(true)
+    setError('')
+    try {
+      await create({
+        name,
+        category: (form.category || 'Other') as PropertyCategory,
+        ownership: (form.ownership || 'Purchased') as OwnershipType,
+        area,
+        areaUnit: form.areaUnit,
+        purchaseDate: form.purchaseDate || undefined,
+        purchasePrice: form.purchasePrice ? parseFloat(form.purchasePrice) : undefined,
+        marketValue: form.marketValue ? parseFloat(form.marketValue) : undefined,
+        previousOwner: form.previousOwner.trim() || undefined,
+        notes: form.notes.trim() || undefined,
+        latitude: lat,
+        longitude: lng,
+      })
+      setForm({
+        name: '',
+        category: '',
+        ownership: '',
+        area: '',
+        areaUnit: 'acres',
+        purchaseDate: '',
+        purchasePrice: '',
+        marketValue: '',
+        previousOwner: '',
+        latitude: '',
+        longitude: '',
+        notes: '',
+      })
+      onClose()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save the property.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   const underline =
@@ -118,9 +128,10 @@ export default function AddPropertyDialog({
           <button
             type="button"
             onClick={submit}
-            className="btn-lift px-8 py-3 bg-gold text-ink text-[0.78rem] font-semibold uppercase tracking-[0.1em] hover:bg-primary transition-colors cursor-pointer"
+            disabled={saving}
+            className="btn-lift px-8 py-3 bg-gold text-ink text-[0.78rem] font-semibold uppercase tracking-[0.1em] hover:bg-primary transition-colors cursor-pointer disabled:opacity-60"
           >
-            Save Record
+            {saving ? 'Saving…' : 'Save Record'}
           </button>
         </>
       }
