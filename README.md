@@ -34,33 +34,39 @@ TerraVault keeps every document, every coordinate, and every visit — held in o
 | Layer | Technology |
 |---|---|
 | Web frontend | React, TypeScript, Vite, Tailwind CSS v4, GSAP, Lenis smooth scroll |
-| Mobile (future) | React Native with native Apple Maps / Google Maps, camera, GPS |
+| Mobile | Flutter (in `app/`), mirroring the `stitch_screens` designs |
 | Backend | Node.js, Express, Passport.js (sessions), MongoDB (in `backend/`) |
+| Package manager | pnpm (workspace: `pnpm-workspace.yaml` covers `backend/` + `frontend/`) |
 | Authentication | Passport.js (app auth) + Google OAuth (Drive access, future) |
 | Cloud storage | The user's own Google Drive (no server-side persistence of property data) |
 
 ## Getting started
 
 ```bash
-# frontend
-cd frontend
-npm install
-npm run dev
-
 # backend (requires local MongoDB on 127.0.0.1:27017)
 cd backend
-npm install
-cp .env.example .env
-npm run dev
+cp .env.example .env     # set PORT (4100 if 4000 is taken), SESSION_SECRET
+pnpm install
+pnpm run dev
+
+# frontend
+cd frontend
+pnpm install
+pnpm run dev
+
+# Flutter mobile app
+cd app
+flutter pub get
+flutter run              # defaults to http://10.0.2.2:4100 (Android) / localhost:4100 (iOS)
 ```
 
 Build for production:
 
 ```bash
-npm run build
+pnpm run build
 ```
 
-> **Note:** the current frontend uses a client-side mock data layer (localStorage) to simulate auth, properties, documents, and visits until the backend lands. See `src/lib/store.tsx`.
+> **Note:** `backend/` runs on port 4100 by default (4000 is often taken by other local projects); the Flutter app's `lib/config.dart` matches.
 
 ---
 
@@ -72,9 +78,9 @@ npm run build
 - [x] Profile, contact
 - [x] Dialogs (add property, add document, add visit, connect drive, confirm)
 - [x] Unified dark + gold design system
-- [ ] Backend (Node.js — auth + properties done in `backend/`)
-- [ ] Google Drive integration
-- [ ] Mobile app (React Native)
+- [x] Backend (Node.js — auth + properties done in `backend/`)
+- [x] Flutter mobile app (`app/` — auth, dashboard, properties, documents, visits, drive connect)
+- [ ] Google Drive integration (drive connect flow exists; needs Google OAuth credentials)
 
 ## License
 
