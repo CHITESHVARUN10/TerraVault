@@ -30,7 +30,9 @@ class AppShell extends StatelessWidget {
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
     final user = auth.user;
-    final initials = (user?.initials.isNotEmpty ?? false) ? user!.initials : 'TV';
+    final initials = (user?.initials.isNotEmpty ?? false)
+        ? user!.initials
+        : 'TV';
     final currentIndex = navigationShell.currentIndex;
 
     return Scaffold(
@@ -49,8 +51,9 @@ class AppShell extends StatelessWidget {
         ),
         title: Text(
           'TERRAVAULT',
-          style: TvTypography.labelUI(context)
-              .copyWith(letterSpacing: 4, color: TvColors.gold),
+          style: TvTypography.labelUI(
+            context,
+          ).copyWith(letterSpacing: 4, color: TvColors.gold),
         ),
         actions: [
           Padding(
@@ -64,8 +67,9 @@ class AppShell extends StatelessWidget {
                   backgroundColor: TvColors.plateInset,
                   child: Text(
                     initials,
-                    style: TvTypography.labelUI(context)
-                        .copyWith(color: TvColors.amber, fontSize: 11),
+                    style: TvTypography.labelUI(
+                      context,
+                    ).copyWith(color: TvColors.amber, fontSize: 11),
                   ),
                 ),
               ),
@@ -79,8 +83,11 @@ class AppShell extends StatelessWidget {
           backgroundColor: TvColors.plate,
           indicatorColor: TvColors.hairlineHover,
           height: 62,
-          labelTextStyle: WidgetStateProperty.resolveWith((states) =>
-              TvTypography.labelUI(context).copyWith(fontSize: 10, letterSpacing: 1)),
+          labelTextStyle: WidgetStateProperty.resolveWith(
+            (states) => TvTypography.labelUI(
+              context,
+            ).copyWith(fontSize: 10, letterSpacing: 1),
+          ),
         ),
         child: NavigationBar(
           selectedIndex: currentIndex,
@@ -133,8 +140,9 @@ class _TvDrawer extends StatelessWidget {
                 children: [
                   Text(
                     'TERRAVAULT',
-                    style: TvTypography.labelUI(context)
-                        .copyWith(letterSpacing: 4, color: TvColors.gold),
+                    style: TvTypography.labelUI(
+                      context,
+                    ).copyWith(letterSpacing: 4, color: TvColors.gold),
                   ),
                   const Spacer(),
                   IconButton(
@@ -180,8 +188,9 @@ class _TvDrawer extends StatelessWidget {
                     backgroundColor: TvColors.plateInset,
                     child: Text(
                       user?.initials ?? 'TV',
-                      style: TvTypography.labelUI(context)
-                          .copyWith(color: TvColors.amber, fontSize: 12),
+                      style: TvTypography.labelUI(
+                        context,
+                      ).copyWith(color: TvColors.amber, fontSize: 12),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -189,12 +198,15 @@ class _TvDrawer extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(user?.name ?? '',
-                            style: TvTypography.labelUI(context)),
+                        Text(
+                          user?.name ?? '',
+                          style: TvTypography.labelUI(context),
+                        ),
                         Text(
                           '${properties.all.length} RECORDS · LOGGED IN',
-                          style: TvTypography.eyebrow(context)
-                              .copyWith(fontSize: 9, letterSpacing: 1.6),
+                          style: TvTypography.eyebrow(
+                            context,
+                          ).copyWith(fontSize: 9, letterSpacing: 1.6),
                         ),
                       ],
                     ),
@@ -211,8 +223,9 @@ class _TvDrawer extends StatelessWidget {
                 icon: const Icon(Icons.logout, color: TvColors.amber, size: 18),
                 label: Text(
                   'Sign out',
-                  style: TvTypography.labelUI(context)
-                      .copyWith(color: TvColors.amber),
+                  style: TvTypography.labelUI(
+                    context,
+                  ).copyWith(color: TvColors.amber),
                 ),
               ),
             ],

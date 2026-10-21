@@ -5,20 +5,19 @@ class AuthService {
   final TvApiClient _client = TvApiClient.instance;
 
   Future<TvUser> register(String name, String email, String password) async {
-    final data = await _client.post('/auth/register', body: {
-      'name': name,
-      'email': email,
-      'password': password,
-    });
+    final data = await _client.post(
+      '/auth/register',
+      body: {'name': name, 'email': email, 'password': password},
+    );
     final map = _client.asMap(data) ?? const {};
     return TvUser.fromJson(map['user'] as Map<String, dynamic>);
   }
 
   Future<TvUser> login(String email, String password) async {
-    final data = await _client.post('/auth/login', body: {
-      'email': email,
-      'password': password,
-    });
+    final data = await _client.post(
+      '/auth/login',
+      body: {'email': email, 'password': password},
+    );
     final map = _client.asMap(data) ?? const {};
     return TvUser.fromJson(map['user'] as Map<String, dynamic>);
   }

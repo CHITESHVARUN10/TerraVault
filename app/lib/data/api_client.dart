@@ -1,3 +1,5 @@
+import 'dart:io' show Directory;
+
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
@@ -35,18 +37,32 @@ class TvApiClient {
   PersistCookieJar? get cookieJar => _jar;
   PersistCookieJar? _jar;
 
+  /// Invoked when the backend rejects the session (401). Wired by the app to
+  /// clear the auth state so the router redirects to /login.
+  void Function()? onUnauthorized;
+
   /// Wires the persistent cookie jar. Call once from main() before any
   /// request so the session cookie survives restarts.
   Future<void> init() async {
     if (_jar != null || kIsWeb) return;
     final dir = (await getApplicationDocumentsDirectory()).path;
-    _jar = PersistCookieJar(ignoreExpires: true, storage: FileStorage('$dir/.cookies/'));
+    final cookieDir = Directory('$dir/.cookies/');
+    if (!await cookieDir.exists()) {
+      await cookieDir.create(recursive: true);
+    }
+    _jar = PersistCookieJar(
+      ignoreExpires: true,
+      storage: FileStorage(cookieDir.path),
+    );
     _dio.interceptors.add(CookieManager(_jar!));
   }
 
   /// Unwraps `{user}` / `{property}` / `{properties}` style envelopes and
   /// converts Dio failures into [TvApiException].
   TvApiException _fromDioError(DioException e) {
+    if (e.response?.statusCode == 401) {
+      onUnauthorized?.call();
+    }
     final data = e.response?.data;
     String message = 'Request failed. Check your connection and the backend.';
     if (data is Map<String, dynamic> && data['error'] is String) {
@@ -69,8 +85,11 @@ class TvApiClient {
 
   dynamic post(String path, {Object? body, Map<String, dynamic>? query}) async {
     try {
-      final res = await _dio.post<dynamic>(path,
-          data: body, queryParameters: query);
+      final res = await _dio.post<dynamic>(
+        path,
+        data: body,
+        queryParameters: query,
+      );
       return res.data;
     } on DioException catch (e) {
       throw _fromDioError(e);
@@ -95,7 +114,12 @@ class TvApiClient {
     }
   }
 
-  dynamic upload(String path, {required String filePath, required String fileName, required String type}) async {
+  dynamic upload(
+    String path, {
+    required String filePath,
+    required String fileName,
+    required String type,
+  }) async {
     try {
       final form = FormData.fromMap({
         'type': type,
@@ -108,7 +132,8 @@ class TvApiClient {
     }
   }
 
-  Map<String, dynamic>? asMap(dynamic data) => data is Map<String, dynamic> ? data : null;
+  Map<String, dynamic>? asMap(dynamic data) =>
+      data is Map<String, dynamic> ? data : null;
 
   List<TvProperty> asPropertyList(dynamic data) {
     final m = asMap(data);

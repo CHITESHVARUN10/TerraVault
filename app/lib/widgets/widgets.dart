@@ -142,13 +142,13 @@ class TvButton extends StatelessWidget {
     final Color bg = primary
         ? TvColors.gold
         : danger
-            ? TvColors.delete
-            : Colors.transparent;
+        ? TvColors.delete
+        : Colors.transparent;
     final Color fg = primary
         ? TvColors.onGold
         : danger
-            ? Colors.white
-            : TvColors.amber;
+        ? Colors.white
+        : TvColors.amber;
 
     final Widget child = loading
         ? SizedBox(
@@ -185,10 +185,7 @@ class TvButton extends StatelessWidget {
           shape: const RoundedRectangleBorder(borderRadius: tvBorderRadius),
           side: primary
               ? null
-              : const BorderSide(
-                  color: TvColors.outlineVariant,
-                  width: 1,
-                ),
+              : const BorderSide(color: TvColors.outlineVariant, width: 1),
         ),
         child: child,
       ),
@@ -286,7 +283,9 @@ class TvChip extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: TvTypography.labelUI(context).copyWith(color: fg, fontSize: 11),
+          style: TvTypography.labelUI(
+            context,
+          ).copyWith(color: fg, fontSize: 11),
         ),
       ),
     );
@@ -295,11 +294,7 @@ class TvChip extends StatelessWidget {
 
 /// Dashed-border empty padding (empty states, dropzones).
 class DashedBox extends StatelessWidget {
-  const DashedBox({
-    required this.child,
-    this.height,
-    super.key,
-  });
+  const DashedBox({required this.child, this.height, super.key});
 
   final Widget child;
   final double? height;
@@ -322,11 +317,7 @@ class DashedBox extends StatelessWidget {
 
 /// Tappable dashed "+ action" plate used on dashboard / properties.
 class DashedAction extends StatelessWidget {
-  const DashedAction({
-    required this.label,
-    required this.onTap,
-    super.key,
-  });
+  const DashedAction({required this.label, required this.onTap, super.key});
 
   final String label;
   final VoidCallback onTap;
@@ -344,8 +335,9 @@ class DashedAction extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               label.toUpperCase(),
-              style: TvTypography.labelUI(context)
-                  .copyWith(color: TvColors.amber, fontSize: 11, letterSpacing: 2),
+              style: TvTypography.labelUI(
+                context,
+              ).copyWith(color: TvColors.amber, fontSize: 11, letterSpacing: 2),
             ),
           ],
         ),

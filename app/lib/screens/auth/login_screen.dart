@@ -21,6 +21,14 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscure = true;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) context.read<AuthProvider>().clearError();
+    });
+  }
+
+  @override
   void dispose() {
     _email.dispose();
     _password.dispose();
@@ -29,9 +37,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _submit() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
-    final ok = await context
-        .read<AuthProvider>()
-        .login(_email.text.trim(), _password.text);
+    final ok = await context.read<AuthProvider>().login(
+      _email.text.trim(),
+      _password.text,
+    );
     if (ok && mounted) context.go('/dashboard');
   }
 
@@ -60,8 +69,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       controller: _email,
                       prefixIcon: Icons.mail_outline,
                       keyboardType: TextInputType.emailAddress,
-                      validator: (v) =>
-                          (v == null || !v.contains('@')) ? 'A valid email is required.' : null,
+                      validator: (v) => (v == null || !v.contains('@'))
+                          ? 'A valid email is required.'
+                          : null,
                     ),
                     const SizedBox(height: 12),
                     TvField(
@@ -71,14 +81,17 @@ class _LoginScreenState extends State<LoginScreen> {
                       obscureText: _obscure,
                       suffix: IconButton(
                         icon: Icon(
-                          _obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                          _obscure
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
                           color: TvColors.outline,
                           size: 18,
                         ),
                         onPressed: () => setState(() => _obscure = !_obscure),
                       ),
-                      validator: (v) =>
-                          (v == null || v.isEmpty) ? 'Your security key is required.' : null,
+                      validator: (v) => (v == null || v.isEmpty)
+                          ? 'Your security key is required.'
+                          : null,
                     ),
                     Align(
                       alignment: Alignment.centerRight,
@@ -86,10 +99,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () => context.go('/reset-password'),
                         child: Text(
                           'Forgot your security key?',
-                          style: TvTypography.bodyMD(context).copyWith(
-                            color: TvColors.amber,
-                            fontSize: 12,
-                          ),
+                          style: TvTypography.bodyMD(
+                            context,
+                          ).copyWith(color: TvColors.amber, fontSize: 12),
                         ),
                       ),
                     ),
@@ -97,8 +109,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(height: 4),
                       Text(
                         auth.error!,
-                        style: TvTypography.bodyMD(context)
-                            .copyWith(color: TvColors.error, fontSize: 12),
+                        style: TvTypography.bodyMD(
+                          context,
+                        ).copyWith(color: TvColors.error, fontSize: 12),
                       ),
                     ],
                     const SizedBox(height: 12),
@@ -114,14 +127,17 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         Text(
                           'New to TerraVault?',
-                          style: TvTypography.bodyMD(context).copyWith(fontSize: 13),
+                          style: TvTypography.bodyMD(
+                            context,
+                          ).copyWith(fontSize: 13),
                         ),
                         TextButton(
                           onPressed: () => context.go('/register'),
                           child: Text(
                             'Open your vault',
-                            style: TvTypography.labelUI(context)
-                                .copyWith(color: TvColors.amber, fontSize: 13),
+                            style: TvTypography.labelUI(
+                              context,
+                            ).copyWith(color: TvColors.amber, fontSize: 13),
                           ),
                         ),
                       ],

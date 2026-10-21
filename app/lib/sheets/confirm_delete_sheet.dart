@@ -31,7 +31,9 @@ class _ConfirmDeleteSheetState extends State<_ConfirmDeleteSheet> {
 
   Future<void> _confirm() async {
     setState(() => _deleting = true);
-    final ok = await context.read<PropertiesProvider>().delete(widget.property.id);
+    final ok = await context.read<PropertiesProvider>().delete(
+      widget.property.id,
+    );
     if (!mounted) return;
     if (ok) {
       Navigator.of(context).pop();
@@ -55,12 +57,18 @@ class _ConfirmDeleteSheetState extends State<_ConfirmDeleteSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Icon(Icons.warning_amber_outlined, color: TvColors.delete, size: 34),
+              const Icon(
+                Icons.warning_amber_outlined,
+                color: TvColors.delete,
+                size: 34,
+              ),
               const SizedBox(height: 10),
               const Eyebrow('Irrevocable action'),
               const SizedBox(height: 6),
-              Text('Remove "${widget.property.name}" from the vault?',
-                  style: TvTypography.headingMD(context)),
+              Text(
+                'Remove "${widget.property.name}" from the vault?',
+                style: TvTypography.headingMD(context),
+              ),
               const SizedBox(height: 10),
               Text(
                 'The metadata record will be deleted from TerraVault. Files '
@@ -72,8 +80,9 @@ class _ConfirmDeleteSheetState extends State<_ConfirmDeleteSheet> {
                 const SizedBox(height: 10),
                 Text(
                   _error!,
-                  style: TvTypography.bodyMD(context)
-                      .copyWith(color: TvColors.error, fontSize: 12),
+                  style: TvTypography.bodyMD(
+                    context,
+                  ).copyWith(color: TvColors.error, fontSize: 12),
                 ),
               ],
               const SizedBox(height: 16),

@@ -22,13 +22,18 @@ class CheckEmailScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Icon(Icons.mark_email_read_outlined,
-                      color: TvColors.amber, size: 40),
+                  const Icon(
+                    Icons.mark_email_read_outlined,
+                    color: TvColors.amber,
+                    size: 40,
+                  ),
                   const SizedBox(height: 12),
                   const Eyebrow('Check your mail'),
                   const SizedBox(height: 8),
-                  Text('A recovery link is on its way',
-                      style: TvTypography.headingLG(context)),
+                  Text(
+                    'A recovery link is on its way',
+                    style: TvTypography.headingLG(context),
+                  ),
                   const SizedBox(height: 12),
                   Text(
                     'Open the message on the device that holds your vault '

@@ -13,7 +13,7 @@ export default defineConfig({
   server: {
     proxy: {
       // Forward API calls to the Node backend during development.
-      '/api': 'http://localhost:4000',
+      '/api': 'http://localhost:4100',
     },
   },
 })

@@ -9,24 +9,19 @@ import '../widgets/widgets.dart';
 
 /// Opens the m16 / 11_log_visit sheet: date, GPS coords (prefilled from the
 /// property), notes. Directional photo capture stubbed for v1.
-void openAddVisitSheet(
-  BuildContext context,
-  TvProperty property,
-  VoidCallback onChanged,
-) {
+void openAddVisitSheet(BuildContext context, TvProperty property) {
   showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
     backgroundColor: TvColors.ink,
-    builder: (_) => _AddVisitSheet(property: property, onChanged: onChanged),
+    builder: (_) => _AddVisitSheet(property: property),
   );
 }
 
 class _AddVisitSheet extends StatefulWidget {
-  const _AddVisitSheet({required this.property, required this.onChanged});
+  const _AddVisitSheet({required this.property});
 
   final TvProperty property;
-  final VoidCallback onChanged;
 
   @override
   State<_AddVisitSheet> createState() => _AddVisitSheetState();
@@ -34,11 +29,20 @@ class _AddVisitSheet extends StatefulWidget {
 
 class _AddVisitSheetState extends State<_AddVisitSheet> {
   final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _lat =
-      TextEditingController(text: widget.property.latitude == 0 ? '' : widget.property.latitude.toStringAsFixed(4));
-  late final TextEditingController _lng =
-      TextEditingController(text: widget.property.longitude == 0 ? '' : widget.property.longitude.toStringAsFixed(4));
+  late final TextEditingController _lat = TextEditingController(
+    text: widget.property.latitude == 0
+        ? ''
+        : widget.property.latitude.toStringAsFixed(4),
+  );
+  late final TextEditingController _lng = TextEditingController(
+    text: widget.property.longitude == 0
+        ? ''
+        : widget.property.longitude.toStringAsFixed(4),
+  );
   late final TextEditingController _notes = TextEditingController();
+  late final TextEditingController _dateField = TextEditingController(
+    text: _formatDate(DateTime.now()),
+  );
   DateTime _date = DateTime.now();
   bool _saving = false;
   String? _error;
@@ -48,6 +52,7 @@ class _AddVisitSheetState extends State<_AddVisitSheet> {
     _lat.dispose();
     _lng.dispose();
     _notes.dispose();
+    _dateField.dispose();
     super.dispose();
   }
 
@@ -60,15 +65,21 @@ class _AddVisitSheetState extends State<_AddVisitSheet> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: Theme.of(context)
-                .colorScheme
-                .copyWith(primary: TvColors.amber, surface: TvColors.plate),
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+              primary: TvColors.amber,
+              surface: TvColors.plate,
+            ),
           ),
           child: child!,
         );
       },
     );
-    if (picked != null) setState(() => _date = picked);
+    if (picked != null) {
+      setState(() {
+        _date = picked;
+        _dateField.text = _formatDate(picked);
+      });
+    }
   }
 
   Future<void> _save() async {
@@ -87,11 +98,13 @@ class _AddVisitSheetState extends State<_AddVisitSheet> {
       'note': _notes.text.trim(),
     };
     try {
-      final updated = await PropertyService().addVisit(widget.property.id, body);
+      final updated = await PropertyService().addVisit(
+        widget.property.id,
+        body,
+      );
       if (!mounted) return;
       context.read<PropertiesProvider>().replace(updated);
       Navigator.of(context).pop();
-      widget.onChanged();
     } catch (e) {
       if (!mounted) return;
       setState(() => _error = 'Could not save the log. $e');
@@ -103,7 +116,9 @@ class _AddVisitSheetState extends State<_AddVisitSheet> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -121,7 +136,11 @@ class _AddVisitSheetState extends State<_AddVisitSheet> {
                         const Eyebrow('Physical protocol'),
                         const Spacer(),
                         IconButton(
-                          icon: const Icon(Icons.close, size: 20, color: TvColors.onSurface),
+                          icon: const Icon(
+                            Icons.close,
+                            size: 20,
+                            color: TvColors.onSurface,
+                          ),
                           onPressed: () => Navigator.of(context).pop(),
                         ),
                       ],
@@ -133,9 +152,7 @@ class _AddVisitSheetState extends State<_AddVisitSheet> {
                         Expanded(
                           child: TvField(
                             label: 'Date',
-                            controller: TextEditingController(
-                              text: '${_date.day} ${_month(_date.month)} ${_date.year}',
-                            ),
+                            controller: _dateField,
                             readOnly: true,
                             onTap: _pickDate,
                             prefixIcon: Icons.calendar_today_outlined,
@@ -150,12 +167,14 @@ class _AddVisitSheetState extends State<_AddVisitSheet> {
                           child: TvField(
                             label: 'Latitude',
                             controller: _lat,
-                            keyboardType:
-                                const TextInputType.numberWithOptions(decimal: true, signed: true),
+                            keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true,
+                              signed: true,
+                            ),
                             validator: (v) =>
                                 (v == null || double.tryParse(v) == null)
-                                    ? 'Coordinates required.'
-                                    : null,
+                                ? 'Coordinates required.'
+                                : null,
                           ),
                         ),
                         const SizedBox(width: 10),
@@ -163,12 +182,14 @@ class _AddVisitSheetState extends State<_AddVisitSheet> {
                           child: TvField(
                             label: 'Longitude',
                             controller: _lng,
-                            keyboardType:
-                                const TextInputType.numberWithOptions(decimal: true, signed: true),
+                            keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true,
+                              signed: true,
+                            ),
                             validator: (v) =>
                                 (v == null || double.tryParse(v) == null)
-                                    ? 'Coordinates required.'
-                                    : null,
+                                ? 'Coordinates required.'
+                                : null,
                           ),
                         ),
                       ],
@@ -184,17 +205,25 @@ class _AddVisitSheetState extends State<_AddVisitSheet> {
                     Plate(
                       ticked: false,
                       fill: TvColors.plateInset,
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 10,
+                      ),
                       child: Row(
                         children: [
-                          const Icon(Icons.photo_camera_outlined,
-                              color: TvColors.amber, size: 20),
+                          const Icon(
+                            Icons.photo_camera_outlined,
+                            color: TvColors.amber,
+                            size: 20,
+                          ),
                           const SizedBox(width: 10),
                           Expanded(
                             child: Text(
                               '5 directional photos (standing, north, east, '
                               'south, west) will attach to this visit.',
-                              style: TvTypography.bodyMD(context).copyWith(fontSize: 11),
+                              style: TvTypography.bodyMD(
+                                context,
+                              ).copyWith(fontSize: 11),
                             ),
                           ),
                         ],
@@ -204,8 +233,9 @@ class _AddVisitSheetState extends State<_AddVisitSheet> {
                       const SizedBox(height: 10),
                       Text(
                         _error!,
-                        style: TvTypography.bodyMD(context)
-                            .copyWith(color: TvColors.error, fontSize: 12),
+                        style: TvTypography.bodyMD(
+                          context,
+                        ).copyWith(color: TvColors.error, fontSize: 12),
                       ),
                     ],
                     const SizedBox(height: 16),
@@ -238,9 +268,20 @@ class _AddVisitSheetState extends State<_AddVisitSheet> {
     );
   }
 
+  String _formatDate(DateTime d) => '${d.day} ${_month(d.month)} ${d.year}';
+
   String _month(int m) => switch (m) {
-        1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr',
-        5 => 'May', 6 => 'Jun', 7 => 'Jul', 8 => 'Aug',
-        9 => 'Sep', 10 => 'Oct', 11 => 'Nov', _ => 'Dec',
-      };
+    1 => 'Jan',
+    2 => 'Feb',
+    3 => 'Mar',
+    4 => 'Apr',
+    5 => 'May',
+    6 => 'Jun',
+    7 => 'Jul',
+    8 => 'Aug',
+    9 => 'Sep',
+    10 => 'Oct',
+    11 => 'Nov',
+    _ => 'Dec',
+  };
 }

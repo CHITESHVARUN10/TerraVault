@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/providers.dart';
@@ -9,8 +10,24 @@ import '../../widgets/widgets.dart';
 import '../../sheets/connect_drive_sheet.dart';
 
 /// 07_profile / m18 — identity, drive storage, vault summary.
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final props = context.read<PropertiesProvider>();
+      if (!props.loaded) props.refresh();
+      context.read<DriveProvider>().refresh();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +37,9 @@ class ProfileScreen extends StatelessWidget {
     final user = auth.user;
 
     if (user == null) {
-      return const Center(child: CircularProgressIndicator(color: TvColors.amber));
+      return const Center(
+        child: CircularProgressIndicator(color: TvColors.amber),
+      );
     }
 
     final docCount = props.all.fold<int>(0, (a, p) => a + p.documents.length);
@@ -32,7 +51,10 @@ class ProfileScreen extends StatelessWidget {
       children: [
         Text('Profile', style: TvTypography.headingLG(context)),
         const SizedBox(height: 6),
-        Text('Account', style: TvTypography.eyebrow(context).copyWith(fontSize: 10)),
+        Text(
+          'Account',
+          style: TvTypography.eyebrow(context).copyWith(fontSize: 10),
+        ),
         const SizedBox(height: 16),
         Center(
           child: Stack(
@@ -42,8 +64,9 @@ class ProfileScreen extends StatelessWidget {
                 backgroundColor: TvColors.plateInset,
                 child: Text(
                   user.initials,
-                  style: TvTypography.headingMD(context)
-                      .copyWith(color: TvColors.amber, fontSize: 20),
+                  style: TvTypography.headingMD(
+                    context,
+                  ).copyWith(color: TvColors.amber, fontSize: 20),
                 ),
               ),
               Positioned(
@@ -57,24 +80,31 @@ class ProfileScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(999),
                     border: Border.all(color: TvColors.ink, width: 2),
                   ),
-                  child: const Icon(Icons.lock, size: 12, color: TvColors.onGold),
+                  child: const Icon(
+                    Icons.lock,
+                    size: 12,
+                    color: TvColors.onGold,
+                  ),
                 ),
               ),
             ],
           ),
         ),
         const SizedBox(height: 12),
-        Center(
-          child: Text(user.name, style: TvTypography.headingSM(context)),
-        ),
+        Center(child: Text(user.name, style: TvTypography.headingSM(context))),
         Center(
           child: Text(
-            'Joined ${user.joinedAt ?? "-"}',
+            'Joined ${_joinedLabel(user.joinedAt)}',
             style: TvTypography.bodyMD(context).copyWith(fontSize: 12),
           ),
         ),
         const SizedBox(height: 12),
-        Center(child: TvChip(label: '${user.plan.toUpperCase()} TIER', selected: true)),
+        Center(
+          child: TvChip(
+            label: '${user.plan.toUpperCase()} TIER',
+            selected: true,
+          ),
+        ),
         const SizedBox(height: 24),
         const Eyebrow('Personal details'),
         const SizedBox(height: 10),
@@ -110,7 +140,9 @@ class ProfileScreen extends StatelessWidget {
                     drive.connected
                         ? Icons.cloud_done_outlined
                         : Icons.cloud_off_outlined,
-                    color: drive.connected ? TvColors.success : TvColors.outline,
+                    color: drive.connected
+                        ? TvColors.success
+                        : TvColors.outline,
                     size: 24,
                   ),
                   const Spacer(),
@@ -143,19 +175,25 @@ class ProfileScreen extends StatelessWidget {
         const SizedBox(height: 24),
         const Eyebrow('Vault summary'),
         const SizedBox(height: 10),
-        GridView.count(
-          crossAxisCount: 2,
+        GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 12,
-          childAspectRatio: 2.2,
-          children: [
-            StatTile(label: 'Assets', value: props.all.length.toString()),
-            StatTile(label: 'Records', value: docCount.toString()),
-            StatTile(label: 'Logs', value: visitCount.toString()),
-            StatTile(label: 'Est. value', value: formatMoney(vaultValue)),
-          ],
+          itemCount: 4,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 12,
+            crossAxisSpacing: 12,
+            mainAxisExtent: 78,
+          ),
+          itemBuilder: (context, index) {
+            final tiles = [
+              StatTile(label: 'Assets', value: props.all.length.toString()),
+              StatTile(label: 'Records', value: docCount.toString()),
+              StatTile(label: 'Logs', value: visitCount.toString()),
+              StatTile(label: 'Est. value', value: formatMoney(vaultValue)),
+            ];
+            return tiles[index];
+          },
         ),
         const SizedBox(height: 16),
         Plate(
@@ -163,7 +201,11 @@ class ProfileScreen extends StatelessWidget {
           fill: TvColors.plateInset,
           child: Row(
             children: [
-              const Icon(Icons.shield_outlined, color: TvColors.amber, size: 20),
+              const Icon(
+                Icons.shield_outlined,
+                color: TvColors.amber,
+                size: 20,
+              ),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
@@ -187,6 +229,11 @@ class ProfileScreen extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  String _joinedLabel(String? iso) {
+    final parsed = iso == null ? null : DateTime.tryParse(iso);
+    return parsed == null ? '—' : DateFormat('MMMM yyyy').format(parsed);
   }
 }
 

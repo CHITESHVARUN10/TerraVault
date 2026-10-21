@@ -11,6 +11,7 @@ Future<void> main() async {
   await TvApiClient.instance.init();
 
   final auth = AuthProvider();
+  TvApiClient.instance.onUnauthorized = auth.expireSession;
   await auth.bootstrap();
 
   runApp(TerraVaultApp(auth: auth));

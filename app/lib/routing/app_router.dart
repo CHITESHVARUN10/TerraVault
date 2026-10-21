@@ -17,6 +17,7 @@ import '../widgets/app_shell.dart';
 GoRouter buildRouter(AuthProvider auth) {
   return GoRouter(
     initialLocation: '/',
+    refreshListenable: auth,
     redirect: (context, state) {
       final authenticated = auth.isAuthenticated;
       final isAuthRoute = [
@@ -25,7 +26,9 @@ GoRouter buildRouter(AuthProvider auth) {
         '/reset-password',
         '/check-email',
       ].any(state.matchedLocation.startsWith);
-      final isProtected = !isAuthRoute && state.matchedLocation != '/' &&
+      final isProtected =
+          !isAuthRoute &&
+          state.matchedLocation != '/' &&
           state.matchedLocation != '/not-found';
 
       if (isProtected && !authenticated) return '/login';
@@ -33,14 +36,8 @@ GoRouter buildRouter(AuthProvider auth) {
       return null;
     },
     routes: [
-      GoRoute(
-        path: '/',
-        builder: (context, state) => const LandingScreen(),
-      ),
-      GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginScreen(),
-      ),
+      GoRoute(path: '/', builder: (context, state) => const LandingScreen()),
+      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(
         path: '/register',
         builder: (context, state) => const RegisterScreen(),
@@ -61,37 +58,45 @@ GoRouter buildRouter(AuthProvider auth) {
         builder: (context, state, navigationShell) =>
             AppShell(navigationShell: navigationShell),
         branches: [
-          StatefulShellBranch(routes: [
-            GoRoute(
-              path: '/dashboard',
-              builder: (context, state) => const DashboardScreen(),
-            ),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(
-              path: '/properties',
-              builder: (context, state) => const PropertiesScreen(),
-              routes: [
-                GoRoute(
-                  path: ':id',
-                  builder: (context, state) =>
-                      PropertyDetailScreen(id: state.pathParameters['id']!),
-                ),
-              ],
-            ),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(
-              path: '/profile',
-              builder: (context, state) => const ProfileScreen(),
-            ),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(
-              path: '/contact',
-              builder: (context, state) => const ContactScreen(),
-            ),
-          ]),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/dashboard',
+                builder: (context, state) => const DashboardScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/properties',
+                builder: (context, state) => const PropertiesScreen(),
+                routes: [
+                  GoRoute(
+                    path: ':id',
+                    builder: (context, state) =>
+                        PropertyDetailScreen(id: state.pathParameters['id']!),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/profile',
+                builder: (context, state) => const ProfileScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/contact',
+                builder: (context, state) => const ContactScreen(),
+              ),
+            ],
+          ),
         ],
       ),
     ],

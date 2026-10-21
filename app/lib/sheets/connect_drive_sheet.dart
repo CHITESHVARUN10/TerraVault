@@ -70,18 +70,25 @@ class _ConnectDriveSheetState extends State<_ConnectDriveSheet> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.verified_user_outlined,
-                          color: TvColors.success, size: 40),
+                      const Icon(
+                        Icons.verified_user_outlined,
+                        color: TvColors.success,
+                        size: 40,
+                      ),
                       const SizedBox(height: 10),
                       const Eyebrow('External storage'),
                       const SizedBox(height: 6),
-                      Text('Drive connected',
-                          style: TvTypography.headingLG(context)),
+                      Text(
+                        'Drive connected',
+                        style: TvTypography.headingLG(context),
+                      ),
                       const SizedBox(height: 12),
                       Text(
                         '${drive.status.email ?? "Drive"} · ${drive.status.folderName ?? "Property Vault"}'
                         '${drive.status.connectedAt.isEmptyOrNull ? "" : " · since ${drive.status.connectedAt}"}',
-                        style: TvTypography.bodyMD(context).copyWith(fontSize: 12),
+                        style: TvTypography.bodyMD(
+                          context,
+                        ).copyWith(fontSize: 12),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 16),
@@ -114,31 +121,40 @@ class _ConnectDriveSheetState extends State<_ConnectDriveSheet> {
                           const Eyebrow('External storage'),
                           const Spacer(),
                           IconButton(
-                            icon: const Icon(Icons.close, size: 20, color: TvColors.onSurface),
+                            icon: const Icon(
+                              Icons.close,
+                              size: 20,
+                              color: TvColors.onSurface,
+                            ),
                             onPressed: () => Navigator.of(context).pop(),
                           ),
                         ],
                       ),
-                      Text('Connect Archive Repository',
-                          style: TvTypography.headingMD(context)),
+                      Text(
+                        'Connect Archive Repository',
+                        style: TvTypography.headingMD(context),
+                      ),
                       const SizedBox(height: 14),
                       SheetRow(
                         icon: Icons.shield_outlined,
                         title: 'Zero-trust encryption',
-                        subtitle: 'Tokens are AES-256-GCM encrypted and never '
+                        subtitle:
+                            'Tokens are AES-256-GCM encrypted and never '
                             'leave our servers unencrypted. Your files live '
                             'only in your Drive.',
                       ),
                       SheetRow(
                         icon: Icons.cloud_sync_outlined,
                         title: 'Automated backup',
-                        subtitle: 'Every document you store is placed into the '
+                        subtitle:
+                            'Every document you store is placed into the '
                             'property\'s own folder inside your Drive.',
                       ),
                       SheetRow(
                         icon: Icons.key_off_outlined,
                         title: 'Sovereign file ownership',
-                        subtitle: 'Disconnect any time — files remain in your '
+                        subtitle:
+                            'Disconnect any time — files remain in your '
                             'Drive, untouched.',
                       ),
                       const SizedBox(height: 16),
@@ -198,10 +214,15 @@ class SheetRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: TvTypography.labelUI(context).copyWith(fontSize: 13)),
+                Text(
+                  title,
+                  style: TvTypography.labelUI(context).copyWith(fontSize: 13),
+                ),
                 const SizedBox(height: 2),
-                Text(subtitle,
-                    style: TvTypography.bodyMD(context).copyWith(fontSize: 11)),
+                Text(
+                  subtitle,
+                  style: TvTypography.bodyMD(context).copyWith(fontSize: 11),
+                ),
               ],
             ),
           ),

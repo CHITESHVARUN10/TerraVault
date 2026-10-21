@@ -91,19 +91,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
           const SizedBox(height: 24),
           const Eyebrow('Stat ledger'),
           const SizedBox(height: 10),
-          GridView.count(
-            crossAxisCount: 2,
+          GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: 12,
-            crossAxisSpacing: 12,
-            childAspectRatio: 2.2,
-            children: [
-              StatTile(label: 'Properties', value: list.length.toString()),
-              StatTile(label: 'Total area', value: '${_trimNum(totalArea)} sq units'),
-              StatTile(label: 'Est. market value', value: formatMoney(totalValue)),
-              StatTile(label: 'Documents / Visits', value: '$docCount / $visitCount'),
-            ],
+            itemCount: 4,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 12,
+              crossAxisSpacing: 12,
+              mainAxisExtent: 78,
+            ),
+            itemBuilder: (context, index) {
+              final tiles = [
+                StatTile(label: 'Properties', value: list.length.toString()),
+                StatTile(
+                  label: 'Total area',
+                  value: '${_trimNum(totalArea)} sq units',
+                ),
+                StatTile(
+                  label: 'Est. market value',
+                  value: formatMoney(totalValue),
+                ),
+                StatTile(
+                  label: 'Documents / Visits',
+                  value: '$docCount / $visitCount',
+                ),
+              ];
+              return tiles[index];
+            },
           ),
           const SizedBox(height: 24),
           Plate(
@@ -112,7 +127,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Row(
               children: [
                 Icon(
-                  drive.connected ? Icons.cloud_done_outlined : Icons.cloud_off_outlined,
+                  drive.connected
+                      ? Icons.cloud_done_outlined
+                      : Icons.cloud_off_outlined,
                   color: drive.connected ? TvColors.success : TvColors.outline,
                   size: 22,
                 ),
@@ -125,13 +142,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         drive.connected
                             ? 'Google Drive connected'
                             : 'Connect Google Drive',
-                        style: TvTypography.labelUI(context).copyWith(fontSize: 13),
+                        style: TvTypography.labelUI(
+                          context,
+                        ).copyWith(fontSize: 13),
                       ),
                       Text(
                         drive.connected
                             ? '${drive.status.folderName ?? "Property Vault"} · ${drive.status.email ?? ""}'
                             : 'Your records live in your own Drive.',
-                        style: TvTypography.bodyMD(context).copyWith(fontSize: 11),
+                        style: TvTypography.bodyMD(
+                          context,
+                        ).copyWith(fontSize: 11),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
@@ -141,8 +162,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   onPressed: () => openConnectDriveSheet(context),
                   child: Text(
                     drive.connected ? 'Manage' : 'Connect',
-                    style: TvTypography.labelUI(context)
-                        .copyWith(color: TvColors.amber, fontSize: 12),
+                    style: TvTypography.labelUI(
+                      context,
+                    ).copyWith(color: TvColors.amber, fontSize: 12),
                   ),
                 ),
               ],
@@ -162,7 +184,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Plate(
               child: Text(
                 props.error!,
-                style: TvTypography.bodyMD(context).copyWith(color: TvColors.error),
+                style: TvTypography.bodyMD(
+                  context,
+                ).copyWith(color: TvColors.error),
               ),
             )
           else if (list.isEmpty)
@@ -180,10 +204,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
               onPressed: () => context.go('/properties'),
               child: Text(
                 'View all ${list.length} records →',
-                style: TvTypography.labelUI(context).copyWith(
-                  color: TvColors.amber,
-                  fontSize: 12,
-                ),
+                style: TvTypography.labelUI(
+                  context,
+                ).copyWith(color: TvColors.amber, fontSize: 12),
               ),
             ),
           ],

@@ -21,5 +21,6 @@ class AppConfig {
 
   static String get apiBaseUrl => '$baseUrl$apiPath';
 
-  static String get driveConnectUrl => '$apiBaseUrl/drive/connect?state=/dashboard';
+  static String get driveConnectUrl =>
+      '$apiBaseUrl/drive/connect?state=/dashboard';
 }

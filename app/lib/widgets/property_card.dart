@@ -11,8 +11,7 @@ String formatMoney(num v) =>
 String formatArea(TvProperty p) =>
     '${_trim(p.area)} ${TvEnums.areaUnitLabel(p.areaUnit)}';
 
-String _trim(num v) =>
-    v % 1 == 0 ? v.toInt().toString() : v.toStringAsFixed(1);
+String _trim(num v) => v % 1 == 0 ? v.toInt().toString() : v.toStringAsFixed(1);
 
 String formatCoords(TvProperty p) =>
     '${p.latitude.toStringAsFixed(4)}°N / ${p.longitude.toStringAsFixed(4)}°E';
@@ -42,14 +41,13 @@ class PropertyCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     p.name,
-                    style: TvTypography.headingSM(context).copyWith(fontSize: 18),
+                    style: TvTypography.headingSM(
+                      context,
+                    ).copyWith(fontSize: 18),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                TvChip(
-                  label: _ownershipShort(p.ownership),
-                  selected: true,
-                ),
+                TvChip(label: _ownershipShort(p.ownership), selected: true),
               ],
             ),
           ),
@@ -83,8 +81,9 @@ class PropertyCard extends StatelessWidget {
                   onPressed: () => context.go('/properties/${p.id}'),
                   child: Text(
                     'Open →',
-                    style: TvTypography.labelUI(context)
-                        .copyWith(color: TvColors.gold, fontSize: 12),
+                    style: TvTypography.labelUI(
+                      context,
+                    ).copyWith(color: TvColors.gold, fontSize: 12),
                   ),
                 ),
               ],
@@ -104,8 +103,11 @@ class PropertyCard extends StatelessWidget {
             width: 64,
             child: Text(
               label.toUpperCase(),
-              style: TvTypography.eyebrow(context)
-                  .copyWith(fontSize: 9, letterSpacing: 1.6, color: TvColors.amberDim),
+              style: TvTypography.eyebrow(context).copyWith(
+                fontSize: 9,
+                letterSpacing: 1.6,
+                color: TvColors.amberDim,
+              ),
             ),
           ),
           Expanded(
@@ -144,11 +146,7 @@ class PropertyCard extends StatelessWidget {
 
 /// Small stat tile for the dashboard ledger (2×2 grid on m06).
 class StatTile extends StatelessWidget {
-  const StatTile({
-    required this.label,
-    required this.value,
-    super.key,
-  });
+  const StatTile({required this.label, required this.value, super.key});
 
   final String label;
   final String value;
@@ -161,8 +159,11 @@ class StatTile extends StatelessWidget {
         children: [
           Text(
             label.toUpperCase(),
-            style: TvTypography.eyebrow(context)
-                .copyWith(fontSize: 9, letterSpacing: 1.6, color: TvColors.amberDim),
+            style: TvTypography.eyebrow(context).copyWith(
+              fontSize: 9,
+              letterSpacing: 1.6,
+              color: TvColors.amberDim,
+            ),
           ),
           const SizedBox(height: 6),
           Text(

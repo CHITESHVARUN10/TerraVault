@@ -26,66 +26,64 @@ abstract class TvColors {
 
 abstract class TvTypography {
   static TextStyle headingXL(BuildContext c) => GoogleFonts.fraunces(
-        fontSize: 32,
-        fontWeight: FontWeight.w600,
-        letterSpacing: -0.5,
-        color: TvColors.onSurface,
-      );
+    fontSize: 32,
+    fontWeight: FontWeight.w600,
+    letterSpacing: -0.5,
+    color: TvColors.onSurface,
+  );
 
   static TextStyle headingLG(BuildContext c) => GoogleFonts.fraunces(
-        fontSize: 28,
-        fontWeight: FontWeight.w600,
-        letterSpacing: -0.4,
-        color: TvColors.onSurface,
-      );
+    fontSize: 28,
+    fontWeight: FontWeight.w600,
+    letterSpacing: -0.4,
+    color: TvColors.onSurface,
+  );
 
   static TextStyle headingMD(BuildContext c) => GoogleFonts.fraunces(
-        fontSize: 24,
-        fontWeight: FontWeight.w600,
-        color: TvColors.onSurface,
-      );
+    fontSize: 24,
+    fontWeight: FontWeight.w600,
+    color: TvColors.onSurface,
+  );
 
   static TextStyle headingSM(BuildContext c) => GoogleFonts.fraunces(
-        fontSize: 20,
-        fontWeight: FontWeight.w600,
-        color: TvColors.onSurface,
-      );
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    color: TvColors.onSurface,
+  );
 
   static TextStyle bodyLG(BuildContext c) => GoogleFonts.manrope(
-        fontSize: 16,
-        fontWeight: FontWeight.w400,
-        color: TvColors.onSurface,
-      );
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    color: TvColors.onSurface,
+  );
 
   static TextStyle bodyMD(BuildContext c) => GoogleFonts.manrope(
-        fontSize: 14,
-        fontWeight: FontWeight.w400,
-        color: TvColors.onSurfaceVariant,
-      );
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    color: TvColors.onSurfaceVariant,
+  );
 
   static TextStyle labelUI(BuildContext c) => GoogleFonts.manrope(
-        fontSize: 13,
-        fontWeight: FontWeight.w600,
-        color: TvColors.onSurface,
-      );
+    fontSize: 13,
+    fontWeight: FontWeight.w600,
+    color: TvColors.onSurface,
+  );
 
   static TextStyle eyebrow(BuildContext c) => GoogleFonts.manrope(
-        fontSize: 11,
-        fontWeight: FontWeight.w800,
-        letterSpacing: 2.6,
-        color: TvColors.amber,
-      );
+    fontSize: 11,
+    fontWeight: FontWeight.w800,
+    letterSpacing: 2.6,
+    color: TvColors.amber,
+  );
 
   static TextStyle value(BuildContext c) => GoogleFonts.fraunces(
-        fontSize: 15,
-        fontWeight: FontWeight.w500,
-        color: TvColors.onSurface,
-      );
+    fontSize: 15,
+    fontWeight: FontWeight.w500,
+    color: TvColors.onSurface,
+  );
 
-  static TextStyle mono(BuildContext c) => GoogleFonts.jetBrainsMono(
-        fontSize: 12,
-        color: TvColors.amberDim,
-      );
+  static TextStyle mono(BuildContext c) =>
+      GoogleFonts.jetBrainsMono(fontSize: 12, color: TvColors.amberDim);
 }
 
 ThemeData buildTvTheme() {

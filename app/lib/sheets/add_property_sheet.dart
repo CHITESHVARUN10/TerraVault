@@ -42,8 +42,15 @@ class _AddPropertySheetState extends State<_AddPropertySheet> {
   @override
   void dispose() {
     for (final c in [
-      _name, _area, _purchaseDate, _purchasePrice, _marketValue,
-      _previousOwner, _latitude, _longitude, _notes,
+      _name,
+      _area,
+      _purchaseDate,
+      _purchasePrice,
+      _marketValue,
+      _previousOwner,
+      _latitude,
+      _longitude,
+      _notes,
     ]) {
       c.dispose();
     }
@@ -60,9 +67,10 @@ class _AddPropertySheetState extends State<_AddPropertySheet> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: Theme.of(context)
-                .colorScheme
-                .copyWith(primary: TvColors.amber, surface: TvColors.plate),
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+              primary: TvColors.amber,
+              surface: TvColors.plate,
+            ),
           ),
           child: child!,
         );
@@ -97,16 +105,18 @@ class _AddPropertySheetState extends State<_AddPropertySheet> {
     final ok = await context.read<PropertiesProvider>().create(body);
     if (!mounted) return;
     if (ok) {
-      await context.read<PropertiesProvider>().refresh();
-      if (mounted) Navigator.of(context).pop();
+      Navigator.of(context).pop();
     } else {
       final err = context.read<PropertiesProvider>().error;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: TvColors.plate,
-          content: Text(err ?? 'Could not save the record.',
-              style: TvTypography.bodyMD(context)
-                  .copyWith(color: TvColors.error, fontSize: 12)),
+          content: Text(
+            err ?? 'Could not save the record.',
+            style: TvTypography.bodyMD(
+              context,
+            ).copyWith(color: TvColors.error, fontSize: 12),
+          ),
         ),
       );
     }
@@ -119,7 +129,9 @@ class _AddPropertySheetState extends State<_AddPropertySheet> {
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.92),
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.92,
+        ),
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -130,7 +142,11 @@ class _AddPropertySheetState extends State<_AddPropertySheet> {
                     const Eyebrow('Registry'),
                     const Spacer(),
                     IconButton(
-                      icon: const Icon(Icons.close, color: TvColors.onSurface, size: 20),
+                      icon: const Icon(
+                        Icons.close,
+                        color: TvColors.onSurface,
+                        size: 20,
+                      ),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ],
@@ -146,8 +162,9 @@ class _AddPropertySheetState extends State<_AddPropertySheet> {
                         TvField(
                           label: 'Name *',
                           controller: _name,
-                          validator: (v) =>
-                              (v == null || v.trim().isEmpty) ? 'The record needs a name.' : null,
+                          validator: (v) => (v == null || v.trim().isEmpty)
+                              ? 'The record needs a name.'
+                              : null,
                         ),
                         const SizedBox(height: 10),
                         Row(
@@ -180,8 +197,11 @@ class _AddPropertySheetState extends State<_AddPropertySheet> {
                                 label: 'Total Area *',
                                 controller: _area,
                                 keyboardType:
-                                    const TextInputType.numberWithOptions(decimal: true),
-                                validator: (v) => (v == null ||
+                                    const TextInputType.numberWithOptions(
+                                      decimal: true,
+                                    ),
+                                validator: (v) =>
+                                    (v == null ||
                                         v.trim().isEmpty ||
                                         double.tryParse(v) == null)
                                     ? 'Numeric area required.'
@@ -208,7 +228,9 @@ class _AddPropertySheetState extends State<_AddPropertySheet> {
                                 label: 'Purchase Price (₹)',
                                 controller: _purchasePrice,
                                 keyboardType:
-                                    const TextInputType.numberWithOptions(decimal: true),
+                                    const TextInputType.numberWithOptions(
+                                      decimal: true,
+                                    ),
                               ),
                             ),
                             const SizedBox(width: 10),
@@ -217,7 +239,9 @@ class _AddPropertySheetState extends State<_AddPropertySheet> {
                                 label: 'Market Value (₹)',
                                 controller: _marketValue,
                                 keyboardType:
-                                    const TextInputType.numberWithOptions(decimal: true),
+                                    const TextInputType.numberWithOptions(
+                                      decimal: true,
+                                    ),
                               ),
                             ),
                           ],
@@ -256,9 +280,13 @@ class _AddPropertySheetState extends State<_AddPropertySheet> {
                                     child: TvField(
                                       label: 'Latitude *',
                                       controller: _latitude,
-                                      keyboardType: const TextInputType
-                                          .numberWithOptions(decimal: true, signed: true),
-                                      validator: (v) => (v == null ||
+                                      keyboardType:
+                                          const TextInputType.numberWithOptions(
+                                            decimal: true,
+                                            signed: true,
+                                          ),
+                                      validator: (v) =>
+                                          (v == null ||
                                               double.tryParse(v) == null)
                                           ? 'Coordinate precision required.'
                                           : null,
@@ -269,9 +297,13 @@ class _AddPropertySheetState extends State<_AddPropertySheet> {
                                     child: TvField(
                                       label: 'Longitude *',
                                       controller: _longitude,
-                                      keyboardType: const TextInputType
-                                          .numberWithOptions(decimal: true, signed: true),
-                                      validator: (v) => (v == null ||
+                                      keyboardType:
+                                          const TextInputType.numberWithOptions(
+                                            decimal: true,
+                                            signed: true,
+                                          ),
+                                      validator: (v) =>
+                                          (v == null ||
                                               double.tryParse(v) == null)
                                           ? 'Coordinate precision required.'
                                           : null,
@@ -304,10 +336,7 @@ class _AddPropertySheetState extends State<_AddPropertySheet> {
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: TvButton(
-                        label: 'Save Record',
-                        onPressed: _save,
-                      ),
+                      child: TvButton(label: 'Save Record', onPressed: _save),
                     ),
                   ],
                 ),
@@ -329,9 +358,7 @@ class _AddPropertySheetState extends State<_AddPropertySheet> {
     return DropdownButtonFormField<String>(
       initialValue: value,
       dropdownColor: TvColors.plate,
-      decoration: InputDecoration(
-        labelText: label,
-      ),
+      decoration: InputDecoration(labelText: label),
       style: TvTypography.bodyLG(context),
       items: [
         for (final item in items)

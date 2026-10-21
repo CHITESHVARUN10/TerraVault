@@ -45,13 +45,17 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   children: [
                     const Eyebrow('Recovery protocol'),
                     const SizedBox(height: 8),
-                    Text('Reset your security key',
-                        style: TvTypography.headingLG(context)),
+                    Text(
+                      'Reset your security key',
+                      style: TvTypography.headingLG(context),
+                    ),
                     const SizedBox(height: 12),
                     Text(
                       'Enter the email bound to your vault. We will send a '
                       'one-time recovery link.',
-                      style: TvTypography.bodyMD(context).copyWith(fontSize: 13),
+                      style: TvTypography.bodyMD(
+                        context,
+                      ).copyWith(fontSize: 13),
                     ),
                     const SizedBox(height: 20),
                     TvField(
@@ -59,18 +63,24 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       controller: _email,
                       prefixIcon: Icons.mail_outline,
                       keyboardType: TextInputType.emailAddress,
-                      validator: (v) =>
-                          (v == null || !v.contains('@')) ? 'A valid email is required.' : null,
+                      validator: (v) => (v == null || !v.contains('@'))
+                          ? 'A valid email is required.'
+                          : null,
                     ),
                     const SizedBox(height: 16),
-                    TvButton(label: 'Send recovery link →', expanded: true, onPressed: _submit),
+                    TvButton(
+                      label: 'Send recovery link →',
+                      expanded: true,
+                      onPressed: _submit,
+                    ),
                     const SizedBox(height: 16),
                     TextButton(
                       onPressed: () => context.go('/login'),
                       child: Text(
                         '← Back to sign in',
-                        style: TvTypography.labelUI(context)
-                            .copyWith(color: TvColors.amber, fontSize: 13),
+                        style: TvTypography.labelUI(
+                          context,
+                        ).copyWith(color: TvColors.amber, fontSize: 13),
                       ),
                     ),
                   ],

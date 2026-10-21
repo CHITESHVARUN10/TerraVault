@@ -10,24 +10,19 @@ import '../widgets/widgets.dart';
 
 /// Opens the m15 / 10_add_document sheet. Uploads to the property's Drive
 /// folder when Drive is connected (fallback: metadata-only record).
-void openAddDocumentSheet(
-  BuildContext context,
-  TvProperty property,
-  VoidCallback onChanged,
-) {
+void openAddDocumentSheet(BuildContext context, TvProperty property) {
   showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
     backgroundColor: TvColors.ink,
-    builder: (_) => _AddDocumentSheet(property: property, onChanged: onChanged),
+    builder: (_) => _AddDocumentSheet(property: property),
   );
 }
 
 class _AddDocumentSheet extends StatefulWidget {
-  const _AddDocumentSheet({required this.property, required this.onChanged});
+  const _AddDocumentSheet({required this.property});
 
   final TvProperty property;
-  final VoidCallback onChanged;
 
   @override
   State<_AddDocumentSheet> createState() => _AddDocumentSheetState();
@@ -69,7 +64,6 @@ class _AddDocumentSheetState extends State<_AddDocumentSheet> {
       if (!mounted) return;
       context.read<PropertiesProvider>().replace(updated);
       Navigator.of(context).pop();
-      widget.onChanged();
     } catch (e) {
       if (!mounted) return;
       setState(() => _error = e.toString());
@@ -93,7 +87,9 @@ class _AddDocumentSheetState extends State<_AddDocumentSheet> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -109,7 +105,11 @@ class _AddDocumentSheetState extends State<_AddDocumentSheet> {
                       const Eyebrow('File repository'),
                       const Spacer(),
                       IconButton(
-                        icon: const Icon(Icons.close, size: 20, color: TvColors.onSurface),
+                        icon: const Icon(
+                          Icons.close,
+                          size: 20,
+                          color: TvColors.onSurface,
+                        ),
                         onPressed: () => Navigator.of(context).pop(),
                       ),
                     ],
@@ -119,13 +119,20 @@ class _AddDocumentSheetState extends State<_AddDocumentSheet> {
                   DropdownButtonFormField<String>(
                     initialValue: _type,
                     dropdownColor: TvColors.plate,
-                    decoration: const InputDecoration(labelText: 'Document Type'),
+                    decoration: const InputDecoration(
+                      labelText: 'Document Type',
+                    ),
                     style: TvTypography.bodyLG(context).copyWith(fontSize: 13),
                     items: [
                       for (final t in TvEnums.documentTypes)
                         DropdownMenuItem(
                           value: t,
-                          child: Text(t, style: TvTypography.bodyLG(context).copyWith(fontSize: 13)),
+                          child: Text(
+                            t,
+                            style: TvTypography.bodyLG(
+                              context,
+                            ).copyWith(fontSize: 13),
+                          ),
                         ),
                     ],
                     onChanged: (v) => setState(() => _type = v ?? _type),
@@ -135,12 +142,17 @@ class _AddDocumentSheetState extends State<_AddDocumentSheet> {
                     child: _file == null
                         ? Column(
                             children: [
-                              const Icon(Icons.cloud_upload_outlined,
-                                  color: TvColors.amber, size: 28),
+                              const Icon(
+                                Icons.cloud_upload_outlined,
+                                color: TvColors.amber,
+                                size: 28,
+                              ),
                               const SizedBox(height: 8),
                               Text(
                                 'Choose a file to store',
-                                style: TvTypography.bodyMD(context).copyWith(fontSize: 12),
+                                style: TvTypography.bodyMD(
+                                  context,
+                                ).copyWith(fontSize: 12),
                               ),
                               const SizedBox(height: 10),
                               TvButton(
@@ -152,8 +164,11 @@ class _AddDocumentSheetState extends State<_AddDocumentSheet> {
                           )
                         : Row(
                             children: [
-                              const Icon(Icons.description_outlined,
-                                  color: TvColors.amber, size: 22),
+                              const Icon(
+                                Icons.description_outlined,
+                                color: TvColors.amber,
+                                size: 22,
+                              ),
                               const SizedBox(width: 10),
                               Expanded(
                                 child: Column(
@@ -161,14 +176,16 @@ class _AddDocumentSheetState extends State<_AddDocumentSheet> {
                                   children: [
                                     Text(
                                       _file!.name,
-                                      style: TvTypography.labelUI(context)
-                                          .copyWith(fontSize: 12),
+                                      style: TvTypography.labelUI(
+                                        context,
+                                      ).copyWith(fontSize: 12),
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     Text(
                                       _fileSizeLabel(_file!),
-                                      style: TvTypography.bodyMD(context)
-                                          .copyWith(fontSize: 11),
+                                      style: TvTypography.bodyMD(
+                                        context,
+                                      ).copyWith(fontSize: 11),
                                     ),
                                   ],
                                 ),
@@ -177,8 +194,10 @@ class _AddDocumentSheetState extends State<_AddDocumentSheet> {
                                 onPressed: _pickFile,
                                 child: Text(
                                   'Change file',
-                                  style: TvTypography.labelUI(context)
-                                      .copyWith(color: TvColors.amber, fontSize: 11),
+                                  style: TvTypography.labelUI(context).copyWith(
+                                    color: TvColors.amber,
+                                    fontSize: 11,
+                                  ),
                                 ),
                               ),
                             ],
@@ -188,8 +207,9 @@ class _AddDocumentSheetState extends State<_AddDocumentSheet> {
                     const SizedBox(height: 10),
                     Text(
                       _error!,
-                      style: TvTypography.bodyMD(context)
-                          .copyWith(color: TvColors.error, fontSize: 12),
+                      style: TvTypography.bodyMD(
+                        context,
+                      ).copyWith(color: TvColors.error, fontSize: 12),
                     ),
                   ],
                   const SizedBox(height: 16),

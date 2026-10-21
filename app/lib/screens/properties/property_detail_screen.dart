@@ -82,10 +82,20 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
 
     if (_error != null && property == null) {
       return _Chrome(
-        child: Plate(
-          child: Text(_error!,
-              style:
-                  TvTypography.bodyMD(context).copyWith(color: TvColors.error)),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Plate(
+              child: Text(
+                _error!,
+                style: TvTypography.bodyMD(
+                  context,
+                ).copyWith(color: TvColors.error),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TvButton(label: 'Retry', onPressed: _reload),
+          ],
         ),
       );
     }
@@ -113,11 +123,16 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                 onPressed: () => context.go('/properties'),
                 child: Text(
                   'Properties',
-                  style: TvTypography.labelUI(context)
-                      .copyWith(color: TvColors.amber, fontSize: 12),
+                  style: TvTypography.labelUI(
+                    context,
+                  ).copyWith(color: TvColors.amber, fontSize: 12),
                 ),
               ),
-              const Icon(Icons.chevron_right, color: TvColors.outlineVariant, size: 16),
+              const Icon(
+                Icons.chevron_right,
+                color: TvColors.outlineVariant,
+                size: 16,
+              ),
               Expanded(
                 child: Text(
                   p.name,
@@ -143,13 +158,13 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
               children: [
                 TvButton(
                   label: '+ Document',
-                  onPressed: () => openAddDocumentSheet(context, p, _reload),
+                  onPressed: () => openAddDocumentSheet(context, p),
                 ),
                 const SizedBox(width: 10),
                 TvButton(
                   label: '+ Log visit',
                   variant: TvButtonVariant.outline,
-                  onPressed: () => openAddVisitSheet(context, p, _reload),
+                  onPressed: () => openAddVisitSheet(context, p),
                 ),
                 const SizedBox(width: 10),
                 TvButton(
@@ -169,26 +184,25 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Row(
-                  children: [
-                    PulsingPin(),
-                    SizedBox(width: 10),
-                    Spacer(),
-                  ],
+                  children: [PulsingPin(), SizedBox(width: 10), Spacer()],
                 ),
                 const SizedBox(height: 8),
                 Row(
                   children: [
                     Text(
                       formatCoords(p),
-                      style: TvTypography.mono(context).copyWith(color: TvColors.gold),
+                      style: TvTypography.mono(
+                        context,
+                      ).copyWith(color: TvColors.gold),
                     ),
                     const Spacer(),
                     GestureDetector(
                       onTap: () => openInMaps(p.latitude, p.longitude),
                       child: Text(
                         'Open in maps ↗',
-                        style: TvTypography.labelUI(context)
-                            .copyWith(color: TvColors.amber, fontSize: 11),
+                        style: TvTypography.labelUI(
+                          context,
+                        ).copyWith(color: TvColors.amber, fontSize: 11),
                       ),
                     ),
                   ],
@@ -208,11 +222,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
             )
           else
             for (final doc in p.documents)
-              _DocumentRow(
-                property: p,
-                document: doc,
-                onChanged: _reload,
-              ),
+              _DocumentRow(property: p, document: doc),
           const SizedBox(height: 24),
           const Eyebrow('Visits journal'),
           const SizedBox(height: 10),
@@ -224,8 +234,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
               ),
             )
           else
-            for (final visit in p.visits)
-              _VisitRow(property: p, visit: visit, onChanged: _reload),
+            for (final visit in p.visits) _VisitRow(property: p, visit: visit),
           const SizedBox(height: 24),
           const Eyebrow('Metadata'),
           const SizedBox(height: 10),
@@ -236,9 +245,17 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                 _metaRow(context, 'Ownership', p.ownership),
                 _metaRow(context, 'Total area', formatArea(p)),
                 _metaRow(context, 'Purchase date', p.purchaseDate ?? '—'),
-                _metaRow(context, 'Purchase price', formatMoney(p.purchasePrice)),
+                _metaRow(
+                  context,
+                  'Purchase price',
+                  formatMoney(p.purchasePrice),
+                ),
                 _metaRow(context, 'Market value', formatMoney(p.marketValue)),
-                _metaRow(context, 'Previous owner', p.previousOwner.isEmpty ? '—' : p.previousOwner),
+                _metaRow(
+                  context,
+                  'Previous owner',
+                  p.previousOwner.isEmpty ? '—' : p.previousOwner,
+                ),
                 _metaRow(context, 'Coordinates', formatCoords(p)),
                 const SizedBox(height: 6),
                 const Divider(color: TvColors.hairline, height: 1),
@@ -248,15 +265,17 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                     Expanded(
                       child: Text(
                         '${p.documents.length} DOCS',
-                        style: TvTypography.eyebrow(context)
-                            .copyWith(fontSize: 10, letterSpacing: 1.6),
+                        style: TvTypography.eyebrow(
+                          context,
+                        ).copyWith(fontSize: 10, letterSpacing: 1.6),
                       ),
                     ),
                     Expanded(
                       child: Text(
                         '${p.visits.length} VISITS',
-                        style: TvTypography.eyebrow(context)
-                            .copyWith(fontSize: 10, letterSpacing: 1.6),
+                        style: TvTypography.eyebrow(
+                          context,
+                        ).copyWith(fontSize: 10, letterSpacing: 1.6),
                       ),
                     ),
                   ],
@@ -271,8 +290,9 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
               fill: TvColors.plateInset,
               child: Text(
                 p.notes,
-                style: TvTypography.bodyMD(context)
-                    .copyWith(fontStyle: FontStyle.italic),
+                style: TvTypography.bodyMD(
+                  context,
+                ).copyWith(fontStyle: FontStyle.italic),
               ),
             ),
           ],
@@ -283,7 +303,10 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                 child: SizedBox(
                   height: 20,
                   width: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2, color: TvColors.amber),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: TvColors.amber,
+                  ),
                 ),
               ),
             ),
@@ -300,8 +323,11 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
           Expanded(
             child: Text(
               label.toUpperCase(),
-              style: TvTypography.eyebrow(context)
-                  .copyWith(fontSize: 9, letterSpacing: 1.6, color: TvColors.amberDim),
+              style: TvTypography.eyebrow(context).copyWith(
+                fontSize: 9,
+                letterSpacing: 1.6,
+                color: TvColors.amberDim,
+              ),
             ),
           ),
           Expanded(
@@ -318,8 +344,8 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
   }
 }
 
-/// Sticky top chrome shared by detail states (still inside the shell branches
-/// so the bottom bar stays).
+/// Chrome shared by detail loading/error states (inside the shell, so the
+/// top and bottom navigation stay available).
 class _Chrome extends StatelessWidget {
   const _Chrome({required this.child});
 
@@ -327,39 +353,17 @@ class _Chrome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: TvColors.ink,
-      appBar: AppBar(
-        backgroundColor: TvColors.ink,
-        surfaceTintColor: Colors.transparent,
-        title: Text(
-          'PROPERTIES',
-          style: TvTypography.labelUI(context)
-              .copyWith(letterSpacing: 4, color: TvColors.gold, fontSize: 12),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: TvColors.onSurface),
-          onPressed: () => context.go('/properties'),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: child,
-      ),
+    return SafeArea(
+      child: Padding(padding: const EdgeInsets.all(20), child: child),
     );
   }
 }
 
 class _DocumentRow extends StatelessWidget {
-  const _DocumentRow({
-    required this.property,
-    required this.document,
-    required this.onChanged,
-  });
+  const _DocumentRow({required this.property, required this.document});
 
   final TvProperty property;
   final TvDocument document;
-  final VoidCallback onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -370,7 +374,11 @@ class _DocumentRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         child: Row(
           children: [
-            const Icon(Icons.description_outlined, color: TvColors.amber, size: 20),
+            const Icon(
+              Icons.description_outlined,
+              color: TvColors.amber,
+              size: 20,
+            ),
             const SizedBox(width: 10),
             Expanded(
               child: Column(
@@ -401,23 +409,31 @@ class _DocumentRow extends StatelessWidget {
 
   Future<void> _remove(BuildContext context) async {
     final properties = context.read<PropertiesProvider>();
-    final updated =
-        await PropertyService().removeDocument(property.id, document.id);
-    properties.replace(updated);
-    onChanged();
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final updated = await PropertyService().removeDocument(
+        property.id,
+        document.id,
+      );
+      properties.replace(updated);
+    } on TvApiException catch (e) {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            e.message,
+            style: const TextStyle(color: TvColors.error, fontSize: 12),
+          ),
+        ),
+      );
+    }
   }
 }
 
 class _VisitRow extends StatelessWidget {
-  const _VisitRow({
-    required this.property,
-    required this.visit,
-    required this.onChanged,
-  });
+  const _VisitRow({required this.property, required this.visit});
 
   final TvProperty property;
   final TvVisit visit;
-  final VoidCallback onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -448,8 +464,9 @@ class _VisitRow extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       v.note,
-                      style: TvTypography.bodyMD(context)
-                          .copyWith(fontStyle: FontStyle.italic, fontSize: 13),
+                      style: TvTypography.bodyMD(
+                        context,
+                      ).copyWith(fontStyle: FontStyle.italic, fontSize: 13),
                     ),
                   ],
                   const SizedBox(height: 4),
@@ -472,9 +489,23 @@ class _VisitRow extends StatelessWidget {
 
   Future<void> _remove(BuildContext context) async {
     final properties = context.read<PropertiesProvider>();
-    final updated = await PropertyService().removeVisit(property.id, visit.id);
-    properties.replace(updated);
-    onChanged();
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final updated = await PropertyService().removeVisit(
+        property.id,
+        visit.id,
+      );
+      properties.replace(updated);
+    } on TvApiException catch (e) {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            e.message,
+            style: const TextStyle(color: TvColors.error, fontSize: 12),
+          ),
+        ),
+      );
+    }
   }
 }
 
@@ -503,7 +534,11 @@ class _PulsingPinState extends State<PulsingPin>
   Widget build(BuildContext context) {
     return FadeTransition(
       opacity: Tween(begin: 0.4, end: 1.0).animate(_controller),
-      child: const Icon(Icons.location_on_rounded, color: TvColors.amber, size: 24),
+      child: const Icon(
+        Icons.location_on_rounded,
+        color: TvColors.amber,
+        size: 24,
+      ),
     );
   }
 }

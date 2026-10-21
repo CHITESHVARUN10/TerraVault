@@ -21,6 +21,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _password = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) context.read<AuthProvider>().clearError();
+    });
+  }
+
+  @override
   void dispose() {
     _name.dispose();
     _email.dispose();
@@ -31,10 +39,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Future<void> _submit() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     final ok = await context.read<AuthProvider>().register(
-          _name.text.trim(),
-          _email.text.trim(),
-          _password.text,
-        );
+      _name.text.trim(),
+      _email.text.trim(),
+      _password.text,
+    );
     if (ok && mounted) context.go('/dashboard');
   }
 
@@ -56,15 +64,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   children: [
                     const Eyebrow('New custodian'),
                     const SizedBox(height: 8),
-                    Text('Open your vault',
-                        style: TvTypography.headingLG(context)),
+                    Text(
+                      'Open your vault',
+                      style: TvTypography.headingLG(context),
+                    ),
                     const SizedBox(height: 20),
                     TvField(
                       label: 'Full Name',
                       controller: _name,
                       prefixIcon: Icons.person_outline,
-                      validator: (v) =>
-                          (v == null || v.trim().length < 2) ? 'Your name is required.' : null,
+                      validator: (v) => (v == null || v.trim().length < 2)
+                          ? 'Your name is required.'
+                          : null,
                     ),
                     const SizedBox(height: 12),
                     TvField(
@@ -72,8 +83,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       controller: _email,
                       prefixIcon: Icons.mail_outline,
                       keyboardType: TextInputType.emailAddress,
-                      validator: (v) =>
-                          (v == null || !v.contains('@')) ? 'A valid email is required.' : null,
+                      validator: (v) => (v == null || !v.contains('@'))
+                          ? 'A valid email is required.'
+                          : null,
                     ),
                     const SizedBox(height: 12),
                     TvField(
@@ -89,8 +101,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       const SizedBox(height: 12),
                       Text(
                         auth.error!,
-                        style: TvTypography.bodyMD(context)
-                            .copyWith(color: TvColors.error, fontSize: 12),
+                        style: TvTypography.bodyMD(
+                          context,
+                        ).copyWith(color: TvColors.error, fontSize: 12),
                       ),
                     ],
                     const SizedBox(height: 16),
@@ -106,14 +119,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       children: [
                         Text(
                           'Already hold a vault?',
-                          style: TvTypography.bodyMD(context).copyWith(fontSize: 13),
+                          style: TvTypography.bodyMD(
+                            context,
+                          ).copyWith(fontSize: 13),
                         ),
                         TextButton(
                           onPressed: () => context.go('/login'),
                           child: Text(
                             'Sign in',
-                            style: TvTypography.labelUI(context)
-                                .copyWith(color: TvColors.amber, fontSize: 13),
+                            style: TvTypography.labelUI(
+                              context,
+                            ).copyWith(color: TvColors.amber, fontSize: 13),
                           ),
                         ),
                       ],

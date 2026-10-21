@@ -46,6 +46,20 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  /// Called by the API client when the session cookie is no longer valid.
+  void expireSession() {
+    if (user == null) return;
+    user = null;
+    error = null;
+    notifyListeners();
+  }
+
+  void clearError() {
+    if (error == null) return;
+    error = null;
+    notifyListeners();
+  }
+
   Future<bool> _run<T>(Future<TvUser> Function() op) async {
     busy = true;
     error = null;
@@ -69,7 +83,7 @@ class AuthProvider extends ChangeNotifier {
 /// Workspace state: the property ledger and the active property.
 class PropertiesProvider extends ChangeNotifier {
   PropertiesProvider({PropertyService? service})
-      : _service = service ?? PropertyService();
+    : _service = service ?? PropertyService();
 
   final PropertyService _service;
 
@@ -88,10 +102,12 @@ class PropertiesProvider extends ChangeNotifier {
     }
     if (searchQuery.trim().isNotEmpty) {
       final q = searchQuery.toLowerCase();
-      out = out.where((p) =>
-          p.name.toLowerCase().contains(q) ||
-          p.category.toLowerCase().contains(q) ||
-          p.previousOwner.toLowerCase().contains(q));
+      out = out.where(
+        (p) =>
+            p.name.toLowerCase().contains(q) ||
+            p.category.toLowerCase().contains(q) ||
+            p.previousOwner.toLowerCase().contains(q),
+      );
     }
     return out.toList();
   }

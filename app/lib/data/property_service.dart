@@ -17,19 +17,28 @@ class PropertyService {
   }
 
   Future<TvProperty> update(String id, Map<String, dynamic> body) async {
-    return _client.asProperty(await _client.patch('/properties/$id', body: body));
+    return _client.asProperty(
+      await _client.patch('/properties/$id', body: body),
+    );
   }
 
   Future<void> delete(String id) async {
     await _client.delete('/properties/$id');
   }
 
-  Future<TvProperty> addDocumentMetadata(String id, Map<String, dynamic> body) async {
-    return _client.asProperty(await _client.post('/properties/$id/documents', body: body));
+  Future<TvProperty> addDocumentMetadata(
+    String id,
+    Map<String, dynamic> body,
+  ) async {
+    return _client.asProperty(
+      await _client.post('/properties/$id/documents', body: body),
+    );
   }
 
   Future<TvProperty> removeDocument(String id, String docId) async {
-    return _client.asProperty(await _client.delete('/properties/$id/documents/$docId'));
+    return _client.asProperty(
+      await _client.delete('/properties/$id/documents/$docId'),
+    );
   }
 
   /// Uploads a real file to the property's Drive folder when Drive is
@@ -53,22 +62,24 @@ class PropertyService {
       }
       return _client.asProperty(data);
     } on TvApiException catch (e) {
-      final isDriveMissing = e.statusCode == 400 &&
+      final isDriveMissing =
+          e.statusCode == 400 &&
           e.message.toLowerCase().contains('drive is not connected');
       if (!isDriveMissing) rethrow;
-      return addDocumentMetadata(id, {
-        'name': fileName,
-        'type': type,
-      });
+      return addDocumentMetadata(id, {'name': fileName, 'type': type});
     }
   }
 
   Future<TvProperty> addVisit(String id, Map<String, dynamic> body) async {
-    return _client.asProperty(await _client.post('/properties/$id/visits', body: body));
+    return _client.asProperty(
+      await _client.post('/properties/$id/visits', body: body),
+    );
   }
 
   Future<TvProperty> removeVisit(String id, String visitId) async {
-    return _client.asProperty(await _client.delete('/properties/$id/visits/$visitId'));
+    return _client.asProperty(
+      await _client.delete('/properties/$id/visits/$visitId'),
+    );
   }
 }
 

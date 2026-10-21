@@ -23,22 +23,22 @@ class TvUser {
   });
 
   factory TvUser.fromJson(Map<String, dynamic> j) => TvUser(
-        id: _resolveId(j),
-        name: j['name']?.toString() ?? '',
-        email: j['email']?.toString() ?? '',
-        initials: j['initials']?.toString() ?? '',
-        plan: j['plan']?.toString() ?? 'Free',
-        joinedAt: j['joinedAt']?.toString(),
-      );
+    id: _resolveId(j),
+    name: j['name']?.toString() ?? '',
+    email: j['email']?.toString() ?? '',
+    initials: j['initials']?.toString() ?? '',
+    plan: j['plan']?.toString() ?? 'Free',
+    joinedAt: j['joinedAt']?.toString(),
+  );
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'email': email,
-        'initials': initials,
-        'joinedAt': joinedAt,
-        'plan': plan,
-      };
+    'id': id,
+    'name': name,
+    'email': email,
+    'initials': initials,
+    'joinedAt': joinedAt,
+    'plan': plan,
+  };
 }
 
 class TvDocument {
@@ -59,13 +59,13 @@ class TvDocument {
   });
 
   factory TvDocument.fromJson(Map<String, dynamic> j) => TvDocument(
-        id: _resolveId(j),
-        name: j['name']?.toString() ?? '',
-        type: j['type']?.toString() ?? '',
-        uploadedAt: j['uploadedAt']?.toString() ?? '',
-        size: j['size']?.toString() ?? '',
-        driveFileId: j['driveFileId']?.toString() ?? '',
-      );
+    id: _resolveId(j),
+    name: j['name']?.toString() ?? '',
+    type: j['type']?.toString() ?? '',
+    uploadedAt: j['uploadedAt']?.toString() ?? '',
+    size: j['size']?.toString() ?? '',
+    driveFileId: j['driveFileId']?.toString() ?? '',
+  );
 }
 
 class TvVisit {
@@ -84,12 +84,12 @@ class TvVisit {
   });
 
   factory TvVisit.fromJson(Map<String, dynamic> j) => TvVisit(
-        id: _resolveId(j),
-        date: j['date']?.toString() ?? '',
-        note: j['note']?.toString() ?? '',
-        latitude: _toNum(j['latitude']).toDouble(),
-        longitude: _toNum(j['longitude']).toDouble(),
-      );
+    id: _resolveId(j),
+    date: j['date']?.toString() ?? '',
+    note: j['note']?.toString() ?? '',
+    latitude: _toNum(j['latitude']).toDouble(),
+    longitude: _toNum(j['longitude']).toDouble(),
+  );
 
   static num _toNum(Object? v) =>
       v is num ? v : num.tryParse(v?.toString() ?? '') ?? 0;
@@ -153,19 +153,19 @@ class TvProperty {
   }
 
   Map<String, dynamic> toMetadataJson() => {
-        'name': name,
-        'category': category,
-        'ownership': ownership,
-        'purchaseDate': purchaseDate,
-        'purchasePrice': purchasePrice,
-        'area': area,
-        'areaUnit': areaUnit,
-        'marketValue': marketValue,
-        'previousOwner': previousOwner,
-        'notes': notes,
-        'latitude': latitude,
-        'longitude': longitude,
-      };
+    'name': name,
+    'category': category,
+    'ownership': ownership,
+    'purchaseDate': purchaseDate,
+    'purchasePrice': purchasePrice,
+    'area': area,
+    'areaUnit': areaUnit,
+    'marketValue': marketValue,
+    'previousOwner': previousOwner,
+    'notes': notes,
+    'latitude': latitude,
+    'longitude': longitude,
+  };
 }
 
 class DriveStatus {
@@ -182,11 +182,11 @@ class DriveStatus {
   });
 
   factory DriveStatus.fromJson(Map<String, dynamic> j) => DriveStatus(
-        connected: j['connected'] == true,
-        email: j['email']?.toString(),
-        folderName: j['folderName']?.toString(),
-        connectedAt: j['connectedAt']?.toString(),
-      );
+    connected: j['connected'] == true,
+    email: j['email']?.toString(),
+    folderName: j['folderName']?.toString(),
+    connectedAt: j['connectedAt']?.toString(),
+  );
 }
 
 /// Enumerations shared with the web app / backend.
@@ -228,7 +228,14 @@ abstract class TvEnums {
     'Other',
   ];
 
-  static const areaUnits = ['acres', 'hectares', 'sqft', 'sqm', 'guntha', 'bigha'];
+  static const areaUnits = [
+    'acres',
+    'hectares',
+    'sqft',
+    'sqm',
+    'guntha',
+    'bigha',
+  ];
 
   static String areaUnitLabel(String unit) {
     switch (unit) {

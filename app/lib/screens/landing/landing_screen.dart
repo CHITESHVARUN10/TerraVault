@@ -6,8 +6,26 @@ import '../../widgets/widgets.dart';
 
 /// Landing screen — condensed 01_landing: hero, purpose, ledger demo,
 /// visits, maps, privacy, CTA.
-class LandingScreen extends StatelessWidget {
+class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});
+
+  @override
+  State<LandingScreen> createState() => _LandingScreenState();
+}
+
+class _LandingScreenState extends State<LandingScreen> {
+  final _purposeKey = GlobalKey();
+
+  void _scrollToPurpose() {
+    final target = _purposeKey.currentContext;
+    if (target != null) {
+      Scrollable.ensureVisible(
+        target,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOutCubic,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,16 +39,18 @@ class LandingScreen extends StatelessWidget {
               children: [
                 Text(
                   'TERRAVAULT',
-                  style: TvTypography.labelUI(context)
-                      .copyWith(letterSpacing: 4, color: TvColors.gold),
+                  style: TvTypography.labelUI(
+                    context,
+                  ).copyWith(letterSpacing: 4, color: TvColors.gold),
                 ),
                 const Spacer(),
                 TextButton(
                   onPressed: () => context.go('/login'),
                   child: Text(
                     'Sign in',
-                    style: TvTypography.labelUI(context)
-                        .copyWith(color: TvColors.amber),
+                    style: TvTypography.labelUI(
+                      context,
+                    ).copyWith(color: TvColors.amber),
                   ),
                 ),
               ],
@@ -45,8 +65,10 @@ class LandingScreen extends StatelessWidget {
                 children: [
                   TextSpan(
                     text: 'kept',
-                    style: TvTypography.headingXL(context)
-                        .copyWith(color: TvColors.gold, fontStyle: FontStyle.italic),
+                    style: TvTypography.headingXL(context).copyWith(
+                      color: TvColors.gold,
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
                   const TextSpan(text: ' for good'),
                 ],
@@ -72,7 +94,7 @@ class LandingScreen extends StatelessWidget {
                   child: TvButton(
                     label: 'Learn more',
                     variant: TvButtonVariant.outline,
-                    onPressed: () {},
+                    onPressed: _scrollToPurpose,
                   ),
                 ),
               ],
@@ -88,7 +110,9 @@ class LandingScreen extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     'N 27°12′04″ · E 78°00′18″',
-                    style: TvTypography.mono(context).copyWith(color: TvColors.gold),
+                    style: TvTypography.mono(
+                      context,
+                    ).copyWith(color: TvColors.gold),
                   ),
                   const SizedBox(height: 12),
                   const Divider(color: TvColors.hairline, height: 1),
@@ -100,6 +124,7 @@ class LandingScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 48),
+            Container(key: _purposeKey),
             const Eyebrow('Purpose'),
             const SizedBox(height: 10),
             Text(
@@ -119,16 +144,21 @@ class LandingScreen extends StatelessWidget {
                     children: [
                       SizedBox(
                         width: 56,
-                        child: Text('$year',
-                            style: TvTypography.headingSM(context)
-                                .copyWith(color: TvColors.amber, fontSize: 16)),
+                        child: Text(
+                          '$year',
+                          style: TvTypography.headingSM(
+                            context,
+                          ).copyWith(color: TvColors.amber, fontSize: 16),
+                        ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
                           'Standing, north, east, south, west — five frames '
                           'per visit, timestamped, permanent.',
-                          style: TvTypography.bodyMD(context).copyWith(fontSize: 13),
+                          style: TvTypography.bodyMD(
+                            context,
+                          ).copyWith(fontSize: 13),
                         ),
                       ),
                     ],

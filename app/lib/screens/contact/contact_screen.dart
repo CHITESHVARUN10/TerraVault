@@ -15,7 +15,10 @@ class ContactScreen extends StatelessWidget {
       children: [
         Text('Contact', style: TvTypography.headingLG(context)),
         const SizedBox(height: 6),
-        Text('Contact registry', style: TvTypography.eyebrow(context).copyWith(fontSize: 10)),
+        Text(
+          'Contact registry',
+          style: TvTypography.eyebrow(context).copyWith(fontSize: 10),
+        ),
         const SizedBox(height: 16),
         Plate(
           child: Column(
@@ -23,12 +26,17 @@ class ContactScreen extends StatelessWidget {
             children: [
               const Eyebrow('Email'),
               const SizedBox(height: 6),
-              Text('registry@terravault.io', style: TvTypography.value(context)),
+              Text(
+                'registry@terravault.io',
+                style: TvTypography.value(context),
+              ),
               const SizedBox(height: 16),
               const Eyebrow('Custody hours'),
               const SizedBox(height: 6),
-              Text('GMT — weekdays, 09:00 to 18:00.',
-                  style: TvTypography.bodyMD(context)),
+              Text(
+                'GMT — weekdays, 09:00 to 18:00.',
+                style: TvTypography.bodyMD(context),
+              ),
               const SizedBox(height: 16),
               TvButton(
                 label: 'Write to the registry →',

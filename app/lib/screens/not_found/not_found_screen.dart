@@ -22,13 +22,19 @@ class NotFoundScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text('072', style: TvTypography.headingXL(context)
-                      .copyWith(color: TvColors.amberDim)),
+                  Text(
+                    '072',
+                    style: TvTypography.headingXL(
+                      context,
+                    ).copyWith(color: TvColors.amberDim),
+                  ),
                   const SizedBox(height: 6),
                   const Eyebrow('Lost ground'),
                   const SizedBox(height: 8),
-                  Text('This coordinate is outside the survey.',
-                      style: TvTypography.headingLG(context)),
+                  Text(
+                    'This coordinate is outside the survey.',
+                    style: TvTypography.headingLG(context),
+                  ),
                   const SizedBox(height: 12),
                   Text(
                     'The route you followed does not resolve to a record in '
